@@ -1,0 +1,25 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Cube.gd" type="Script" id=1]
+[ext_resource path="res://Materials/cube_line_material.tres" type="Material" id=2]
+[ext_resource path="res://Materials/cube_surface_material.tres" type="Material" id=3]
+[ext_resource path="res://Materials/cube_inner_material.tres" type="Material" id=4]
+[ext_resource path="res://Materials/cube_outer_material.tres" type="Material" id=5]
+[ext_resource path="res://Materials/cube_middle_material.tres" type="Material" id=6]
+
+[sub_resource type="ArrayMesh" id=2]
+
+[sub_resource type="CubeMesh" id=6]
+
+[node name="Cube" type="MeshInstance"]
+mesh = SubResource( 2 )
+script = ExtResource( 1 )
+surface_material = ExtResource( 3 )
+outer_material = ExtResource( 5 )
+middle_material = ExtResource( 6 )
+inner_material = ExtResource( 4 )
+line_material = ExtResource( 2 )
+
+[node name="DebugCube" type="MeshInstance" parent="."]
+visible = false
+mesh = SubResource( 6 )

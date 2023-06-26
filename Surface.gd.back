@@ -1,0 +1,239 @@
+#extends Node
+extends Object
+class_name Surface
+
+enum {
+	SURF_NONE   = 0,
+	SURF_XPLUS  = 0b00_00_01,
+	SURF_XMINUS = 0b00_00_11,
+	SURF_YPLUS  = 0b00_01_00,
+	SURF_YMINUS = 0b00_11_00,
+	SURF_ZPLUS  = 0b01_00_00,
+	SURF_ZMINUS = 0b11_00_00,
+	
+	SURF_MASK_X = 0b00_00_11,
+	SURF_MASK_Y = 0b00_11_00,
+	SURF_MASK_Z = 0b11_00_00,
+	SURF_MASK_XY = SURF_MASK_X | SURF_MASK_Y,
+	SURF_MASK_YZ = SURF_MASK_Y | SURF_MASK_Z,
+	SURF_MASK_ZX = SURF_MASK_Z | SURF_MASK_X,
+	SURF_MASK_ALL = SURF_MASK_X | SURF_MASK_Y | SURF_MASK_Z,
+	
+	SURF_MASK_ENABLES = 0b01_01_01,
+	SURF_MASK_SIGNS = 0b10_10_10,
+	
+	SURF_MASK_PLUS = SURF_MASK_ENABLES,
+	SURF_MASK_MINUS = SURF_MASK_ENABLES | SURF_MASK_SIGNS,
+}
+
+func _init(surf := SURF_NONE):
+	pass
+
+# 逆の面を表すSURF列挙値を返す
+static func invert(surf : int, mask := SURF_MASK_ALL) -> int:
+	return ((surf & mask) ^ ((surf & mask & SURF_MASK_ENABLES) << 1)) \
+		  | (surf & ~mask)
+
+# 2つの面が平行であるかを返す
+static func is_paralell(a : int, b : int, mask := SURF_MASK_ALL) -> bool:
+	return ((a ^ b) & SURF_MASK_ENABLES) == 0
+
+# 対応する正方向の面を返す
+static func to_plus(surf: int, mask := SURF_MASK_ALL) -> int:
+	return ((surf & mask) & (~SURF_MASK_SIGNS)) \
+		  | (surf & ~mask)
+
+# 対応する負方向の面を返す
+static func to_minus(surf: int, mask := SURF_MASK_ALL) -> int:
+	return ((surf & mask) | (SURF_MASK_SIGNS)) \
+		  | (surf & ~mask)
+
+# 面の上のランダムな点を返す
+static func get_random_point(surf : int) -> Vector3:
+	var x : float
+	var y : float
+	var z : float
+	
+	if surf == SURF_NONE:
+		match(randi() % 6):
+			0: surf = SURF_XPLUS
+			1: surf = SURF_XMINUS
+			2: surf = SURF_YPLUS
+			3: surf = SURF_YMINUS
+			4: surf = SURF_ZPLUS
+			5: surf = SURF_ZMINUS
+	
+	# x
+	match (surf & SURF_MASK_X):
+		SURF_XPLUS: x = 1.0
+		SURF_XMINUS : x = -1.0
+		_ : x = rand_range(-0.95, 0.95)
+		
+	# y
+	match (surf & SURF_MASK_Y):
+		SURF_YPLUS: y = 1.0
+		SURF_YMINUS : y = -1.0
+		_ : y = rand_range(-0.95, 0.95)
+		
+	# z
+	match (surf & SURF_MASK_Z):
+		SURF_ZPLUS: z = 1.0
+		SURF_ZMINUS : z = -1.0
+		_ : z = rand_range(-0.95, 0.95)
+	
+	return Vector3(x, y, z)
+	
+
+# 面に対応するPlaneを返す
+static func to_plane(surf : int) -> Plane:
+	return Plane(to_normal(surf), 1)
+
+# 面の法線ベクトルを返す
+static func to_normal(surf : int) -> Vector3:
+	var ret := Vector3.ZERO
+	match surf & SURF_MASK_X:
+		SURF_XPLUS: ret += Vector3(1, 0, 0)
+		SURF_XMINUS: ret += Vector3(-1, 0, 0)
+	match surf & SURF_MASK_Y:
+		SURF_YPLUS: ret += Vector3(0, 1, 0)
+		SURF_YMINUS: ret += Vector3(0, -1, 0)
+	match surf & SURF_MASK_Z:
+		SURF_ZPLUS: ret += Vector3(0, 0, 1)
+		SURF_ZMINUS: ret += Vector3(0, 0, -1)
+	
+	return ret if ret == Vector3.ZERO else ret.normalized()
+
+# あるSURF値が何個の平面に属しているかを返す
+static func get_plane_count(surf : int) -> int:
+	var ret := 0
+	ret += 1 if surf & SURF_MASK_X else 0
+	ret += 1 if surf & SURF_MASK_Y else 0
+	ret += 1 if surf & SURF_MASK_Z else 0
+	return ret;
+
+# ある座標が属している面を返す
+static func from_vector(pos : Vector3) -> int:
+	var ret := 0
+	ret |= SURF_XPLUS if pos.x == 1.0 \
+	  else SURF_XMINUS if pos.x == -1.0 \
+	  else 0
+	ret |= SURF_YPLUS if pos.y == 1.0 \
+	  else SURF_YMINUS if pos.y == -1.0 \
+	  else 0
+	ret |= SURF_ZPLUS if pos.z == 1.0 \
+	  else SURF_ZMINUS if pos.z == -1.0 \
+	  else 0
+	return ret;
+
+static func get_neighbors(surf : int) -> Array:
+	# 単一平面である場合は、その平面と直行している4面を返す
+	match surf:
+		SURF_XPLUS: return [SURF_YPLUS, SURF_ZPLUS, SURF_YMINUS, SURF_ZMINUS, ]
+		SURF_XMINUS: return [SURF_YMINUS, SURF_ZMINUS, SURF_YPLUS, SURF_ZPLUS, ]
+		SURF_YPLUS: return [SURF_ZPLUS, SURF_XPLUS, SURF_ZMINUS, SURF_XMINUS, ]
+		SURF_YMINUS: return [SURF_ZMINUS, SURF_XMINUS, SURF_ZPLUS, SURF_XPLUS, ]
+		SURF_ZPLUS: return [SURF_XPLUS, SURF_YPLUS, SURF_XMINUS, SURF_YMINUS, ]
+		SURF_ZMINUS: return [SURF_XMINUS, SURF_YMINUS, SURF_XPLUS, SURF_YPLUS, ]
+		SURF_NONE: return []
+
+	# ここから先、2面以上に属しているもの
+	# 2面の場合(稜線)：稜線が属している(接触している)面と、稜線と直行している面2つ、計4面を返す
+	# *** 移動時の折り返し順序として、先に稜線所属平面を判定する必要があるため、それを先に返す
+	# 3面の場合(頂点)：頂点が属する3平面を返す
+	var ret = []
+
+	var xpart := surf & SURF_MASK_X
+	var ypart := surf & SURF_MASK_Y
+	var zpart := surf & SURF_MASK_Z
+	
+	# 稜線所属平面
+	if xpart != SURF_NONE:
+		ret.append(xpart)
+	if ypart != SURF_NONE:
+		ret.append(ypart)
+	if zpart != SURF_NONE:
+		ret.append(zpart)
+
+	# 稜線直交平面
+	if xpart == SURF_NONE:
+		ret.append_array([SURF_XPLUS, SURF_XMINUS])
+	if ypart == SURF_NONE:
+		ret.append_array([SURF_YPLUS, SURF_YMINUS])
+	if zpart == SURF_NONE:
+		ret.append_array([SURF_ZPLUS, SURF_ZMINUS])
+	
+
+	return ret
+
+static func v2_to_v3(dir : Vector2) -> Vector3:
+	assert(false, "not implemented")
+	return Vector3.ZERO # TODO
+
+
+
+#
+#enum {
+#	XPLUS,
+#	XMINUS,
+#	YPLUS,
+#	YMINUS,
+#	ZPLUS,
+#	ZMINUS,
+#	NONE = -1,
+#}
+#
+#
+#
+#static func invert(surf : int) -> int:
+#	return surf ^ 0x01
+#
+#static func is_paralell(a : int, b : int) -> bool:
+#	return (a & 0xFE) == (b & 0xFE)
+#
+#static func to_plus(surf: int) -> int:
+#	return surf & (~0x01)
+#
+#static func to_minus(surf: int) -> int:
+#	return surf | 0x01
+#
+#static func get_random_point(surf : int) -> Vector3:
+#	# 稜線に近すぎると問題が起きるため少し間隔を空ける
+#	var a = rand_range(-0.95, 0.95)
+#	var b = rand_range(-0.95, 0.95)
+#
+#	if surf == NONE:
+#		surf = randi() % 6
+#
+#	match surf:
+#		XPLUS, XMINUS:
+#			return Vector3(0, a, b) + to_normal(surf)
+#		YPLUS, YMINUS:
+#			return Vector3(b ,0, a) + to_normal(surf)
+#		ZPLUS, ZMINUS:
+#			return Vector3(a, b, 0) + to_normal(surf)
+#		_:
+#			return Vector3.ZERO
+#
+#
+#static func to_plane(surf : int) -> Plane:
+#	return Plane(to_normal(surf), 1)
+#
+#static func to_normal(surf : int) -> Vector3:
+#	match surf:
+#		XPLUS: return Vector3(1, 0, 0)
+#		YPLUS: return Vector3(0, 1, 0)
+#		ZPLUS: return Vector3(0, 0, 1)
+#		XMINUS: return Vector3(-1, 0, 0)
+#		YMINUS: return Vector3(0, -1, 0)
+#		ZMINUS: return Vector3(0, 0, -1)
+#		_: return Vector3.ZERO # TODO
+#
+#static func from_vector(pos : Vector3) -> int:
+#	assert(false, "not implemented")
+#	return NONE # TODO
+#
+#static func v2_to_v3(dir : Vector2) -> Vector3:
+#	assert(false, "not implemented")
+#	return Vector3.ZERO # TODO
+
+
