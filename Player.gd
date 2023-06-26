@@ -21,8 +21,8 @@ func _ready():
 #	pass
 
 func _physics_process(delta):
-	var dx = Input.get_axis("game_left", "game_right") / 30
-	var dy = Input.get_axis("game_down", "game_up") / 30
+	var dx = Input.get_axis("game_left", "game_right") / 64
+	var dy = Input.get_axis("game_down", "game_up") / 64
 	# var dx = 1.0 / 128
 	# var dy = 1.5 / 128
 	

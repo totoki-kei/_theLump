@@ -56,58 +56,74 @@ func setup_mesh():
 	
 	for size in [0.625, 0.75, 0.875, 1.0]:
 		var verts = PoolVector3Array()
+		var normals = PoolVector3Array()
 		var colors = PoolColorArray()
 
 		# 0
 		verts.append(size * Vector3(-1, -1,  1))
 		colors.append(Color(1.0, 1.0, 1.0, 0.5))
+		normals.append(Vector3(-1, -1,  1).normalized())
 		# 1
 		verts.append(size * Vector3(-1,  1,  1))
 		colors.append(Color(1.0, 1.0, 1.0, 0.5))
+		normals.append(Vector3(-1,  1,  1).normalized())
 		# 2
 		verts.append(size * Vector3( 1,  1,  1))
 		colors.append(Color(1.0, 1.0, 1.0, 0.5))
+		normals.append(Vector3( 1,  1,  1).normalized())
 		# 3
 		verts.append(size * Vector3( 1, -1,  1))
 		colors.append(Color(1.0, 1.0, 1.0, 0.5))
+		normals.append(Vector3( 1, -1,  1).normalized())
 		# 4
 		verts.append(size * Vector3(-1, -1, -1))
 		colors.append(Color(1.0, 1.0, 1.0, 0.5))
+		normals.append(Vector3(-1, -1, -1).normalized())
 		# 5
 		verts.append(size * Vector3(-1,  1, -1))
 		colors.append(Color(1.0, 1.0, 1.0, 0.5))
+		normals.append(Vector3(-1,  1, -1).normalized())
 		# 6
 		verts.append(size * Vector3( 1,  1, -1))
 		colors.append(Color(1.0, 1.0, 1.0, 0.5))
+		normals.append(Vector3( 1,  1, -1).normalized())
 		# 7
 		verts.append(size * Vector3( 1, -1, -1))
 		colors.append(Color(1.0, 1.0, 1.0, 0.5))
+		normals.append(Vector3( 1, -1, -1).normalized())
 
 		# 8
 		verts.append(size * Vector3( 1,  0,  0))
 		colors.append(Color(1.0, 1.0, 1.0, 0.125))
+		normals.append(Vector3( 1,  0,  0))
 		# 9
 		verts.append(size * Vector3(-1,  0,  0))
 		colors.append(Color(1.0, 1.0, 1.0, 0.125))
+		normals.append(Vector3(-1,  0,  0))
 		# 10
 		verts.append(size * Vector3( 0,  1,  0))
 		colors.append(Color(1.0, 1.0, 1.0, 0.125))
+		normals.append(Vector3( 0,  1,  0))
 		# 11
 		verts.append(size * Vector3( 0, -1,  0))
 		colors.append(Color(1.0, 1.0, 1.0, 0.125))
+		normals.append(Vector3( 0, -1,  0))
 		# 12
 		verts.append(size * Vector3( 0,  0,  1))
 		colors.append(Color(1.0, 1.0, 1.0, 0.125))
+		normals.append(Vector3( 0,  0,  1))
 		# 13
 		verts.append(size * Vector3( 0,  0, -1))
 		colors.append(Color(1.0, 1.0, 1.0, 0.125))
+		normals.append(Vector3( 0,  0, -1))
 
 
 		var surface_array = []
 		surface_array.resize(Mesh.ARRAY_MAX)
 		surface_array[Mesh.ARRAY_VERTEX] = verts
 		surface_array[Mesh.ARRAY_INDEX] = indices
-		surface_array[Mesh.ARRAY_COLOR] = colors	
+		surface_array[Mesh.ARRAY_COLOR] = colors
+		#surface_array[Mesh.ARRAY_NORMAL] = normals
 
 		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
 		

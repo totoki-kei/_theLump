@@ -1,0 +1,42 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Materials/cube_surface_material.tres" type="Material" id=1]
+[ext_resource path="res://Materials/cube_outer_material.tres" type="Material" id=2]
+[ext_resource path="res://Materials/cube_middle_material.tres" type="Material" id=3]
+[ext_resource path="res://Materials/cube_inner_material.tres" type="Material" id=4]
+[ext_resource path="res://MaterialTestCamera.gd" type="Script" id=5]
+
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 1, 1, 1 )
+
+[sub_resource type="CubeMesh" id=2]
+size = Vector3( 1.5, 1.5, 1.5 )
+
+[sub_resource type="CubeMesh" id=3]
+size = Vector3( 1.75, 1.75, 1.75 )
+
+[sub_resource type="CubeMesh" id=4]
+
+[node name="Spatial" type="Spatial"]
+
+[node name="Inner" type="MeshInstance" parent="."]
+mesh = SubResource( 1 )
+material/0 = ExtResource( 4 )
+
+[node name="Middle" type="MeshInstance" parent="."]
+mesh = SubResource( 2 )
+skeleton = NodePath("../Inner")
+material/0 = ExtResource( 3 )
+
+[node name="Outer" type="MeshInstance" parent="."]
+mesh = SubResource( 3 )
+skeleton = NodePath("../Middle")
+material/0 = ExtResource( 2 )
+
+[node name="Surface" type="MeshInstance" parent="."]
+mesh = SubResource( 4 )
+material/0 = ExtResource( 1 )
+
+[node name="MaterialTestCamera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3 )
+script = ExtResource( 5 )

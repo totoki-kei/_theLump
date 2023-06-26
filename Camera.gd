@@ -40,7 +40,7 @@ func _process(delta):
 
 			var followee_pos := followee.translation;
 			
-			if followee_pos.x != 1.0 and followee_pos.x != -1.0:
+			if Surface.to_plus(followee.surface) != Surface.SURF_XPLUS:
 				if followee_pos.x < -POS_MOVE_THRESHOLD:
 					pos.x -= SIDEVIEW_SHIFT
 					rate *= SIDEVIEW_RATE
@@ -48,7 +48,7 @@ func _process(delta):
 					pos.x += SIDEVIEW_SHIFT
 					rate *= SIDEVIEW_RATE
 				pass
-			if followee_pos.y != 1.0 and followee_pos.y != -1.0:
+			if Surface.to_plus(followee.surface) != Surface.SURF_YPLUS:
 				if followee_pos.y < -POS_MOVE_THRESHOLD:
 					pos.y -= SIDEVIEW_SHIFT
 					rate *= SIDEVIEW_RATE
@@ -56,7 +56,7 @@ func _process(delta):
 					pos.y += SIDEVIEW_SHIFT
 					rate *= SIDEVIEW_RATE
 				pass
-			if followee_pos.z != 1.0 and followee_pos.z != -1.0:
+			if Surface.to_plus(followee.surface) != Surface.SURF_ZPLUS:
 				if followee_pos.z < -POS_MOVE_THRESHOLD:
 					pos.z -= SIDEVIEW_SHIFT
 					rate *= SIDEVIEW_RATE

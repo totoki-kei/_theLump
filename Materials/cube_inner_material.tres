@@ -2,5 +2,6 @@
 
 [resource]
 flags_transparent = true
+flags_unshaded = true
 vertex_color_use_as_albedo = true
 params_cull_mode = 1
