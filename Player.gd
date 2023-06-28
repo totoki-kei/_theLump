@@ -33,5 +33,4 @@ func _physics_process(delta):
 
 	move_object()
 	
-	print(translation, " / ", surface)
 

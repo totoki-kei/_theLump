@@ -11,8 +11,11 @@ const POS_MOVE_MAX_SPEED = 1.0 / 24.0;
 const SIDEVIEW_SHIFT = 1.75;
 const SIDEVIEW_RATE = 0.875;
 
+
 var followee : GameObject
 var following : bool
+
+var mode : int = 1
 
 var current_pos : Vector3
 var current_up  : Vector3
@@ -29,52 +32,60 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 
 	if following:
 		if followee != null:
-			var up := followee.forward_dir
-			var pos := 3 * Surface.to_vector(followee.surface)
+			if mode == 0:
+				var up := followee.forward_dir
+				var pos := 3 * Surface.to_vector(followee.surface)
 
-			var rate := 1.0
+				var rate := 1.0
 
-			var followee_pos := followee.translation;
+				var followee_pos := followee.translation;
+				
+				if Surface.to_plus(followee.surface) != Surface.SURF_XPLUS:
+					if followee_pos.x < -POS_MOVE_THRESHOLD:
+						pos.x -= SIDEVIEW_SHIFT
+						rate *= SIDEVIEW_RATE
+					elif followee_pos.x > POS_MOVE_THRESHOLD:
+						pos.x += SIDEVIEW_SHIFT
+						rate *= SIDEVIEW_RATE
+					pass
+				if Surface.to_plus(followee.surface) != Surface.SURF_YPLUS:
+					if followee_pos.y < -POS_MOVE_THRESHOLD:
+						pos.y -= SIDEVIEW_SHIFT
+						rate *= SIDEVIEW_RATE
+					elif followee_pos.y > POS_MOVE_THRESHOLD:
+						pos.y += SIDEVIEW_SHIFT
+						rate *= SIDEVIEW_RATE
+					pass
+				if Surface.to_plus(followee.surface) != Surface.SURF_ZPLUS:
+					if followee_pos.z < -POS_MOVE_THRESHOLD:
+						pos.z -= SIDEVIEW_SHIFT
+						rate *= SIDEVIEW_RATE
+					elif followee_pos.z > POS_MOVE_THRESHOLD:
+						pos.z += SIDEVIEW_SHIFT
+						rate *= SIDEVIEW_RATE
+					pass
 			
-			if Surface.to_plus(followee.surface) != Surface.SURF_XPLUS:
-				if followee_pos.x < -POS_MOVE_THRESHOLD:
-					pos.x -= SIDEVIEW_SHIFT
-					rate *= SIDEVIEW_RATE
-				elif followee_pos.x > POS_MOVE_THRESHOLD:
-					pos.x += SIDEVIEW_SHIFT
-					rate *= SIDEVIEW_RATE
+				match followee.surface:
+					Surface.SURF_XPLUS, Surface.SURF_XMINUS:
+						pos.x *= rate
+					Surface.SURF_YPLUS, Surface.SURF_YMINUS:
+						pos.y *= rate
+					Surface.SURF_ZPLUS, Surface.SURF_ZMINUS:
+						pos.z *= rate
+				
+				target_pos = pos
+				target_up = up
+			elif mode == 1:
+				var up := followee.forward_dir
+				var pos := 3 * followee.translation.normalized()
+
+				target_pos = pos
+				target_up = up
 				pass
-			if Surface.to_plus(followee.surface) != Surface.SURF_YPLUS:
-				if followee_pos.y < -POS_MOVE_THRESHOLD:
-					pos.y -= SIDEVIEW_SHIFT
-					rate *= SIDEVIEW_RATE
-				elif followee_pos.y > POS_MOVE_THRESHOLD:
-					pos.y += SIDEVIEW_SHIFT
-					rate *= SIDEVIEW_RATE
-				pass
-			if Surface.to_plus(followee.surface) != Surface.SURF_ZPLUS:
-				if followee_pos.z < -POS_MOVE_THRESHOLD:
-					pos.z -= SIDEVIEW_SHIFT
-					rate *= SIDEVIEW_RATE
-				elif followee_pos.z > POS_MOVE_THRESHOLD:
-					pos.z += SIDEVIEW_SHIFT
-					rate *= SIDEVIEW_RATE
-				pass
-		
-			match followee.surface:
-				Surface.SURF_XPLUS, Surface.SURF_XMINUS:
-					pos.x *= rate
-				Surface.SURF_YPLUS, Surface.SURF_YMINUS:
-					pos.y *= rate
-				Surface.SURF_ZPLUS, Surface.SURF_ZMINUS:
-					pos.z *= rate
-			
-			target_pos = pos
-			target_up = up
 		
 		pass
 

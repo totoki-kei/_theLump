@@ -21,5 +21,4 @@ inner_material = ExtResource( 4 )
 line_material = ExtResource( 2 )
 
 [node name="DebugCube" type="MeshInstance" parent="."]
-visible = false
 mesh = SubResource( 6 )

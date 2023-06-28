@@ -133,3 +133,9 @@ func move_object() -> int:
 	
 	return turn_count
 	
+
+func get_vector(v2d : Vector2) -> Vector3:
+	var ydir = forward_dir
+	var xdir = Surface.to_normal(surface).cross(forward_dir)
+	return xdir * v2d.x + ydir * v2d.y
+

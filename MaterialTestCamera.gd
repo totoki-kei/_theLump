@@ -5,6 +5,8 @@ extends Camera
 # var a = 2
 # var b = "text"
 
+var rx := 0.0
+var ry := 0.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -13,10 +15,14 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	var dx = Input.get_axis("game_left", "game_right") / 360
-	var dy = Input.get_axis("game_down", "game_up") / 360
+	rx += delta * Input.get_axis("game_left", "game_right")
+	ry += delta * Input.get_axis("game_up", "game_down")
 	
-	self.translation = Basis(Vector3(dy, dx, 0)).xform(self.translation)
+	rx = wrapf(rx, -PI, PI)
+	ry = clamp(ry, -PI / 2, PI / 2)
+	
+	#self.translation = Basis(Vector3(dy, dx, 0)).xform(self.translation)
+	self.translation = Vector3(0, 0, 3).rotated(Vector3.RIGHT, ry).rotated(Vector3.UP, rx)
 	self.look_at(Vector3.ZERO, Vector3.UP)
 	
 	pass
