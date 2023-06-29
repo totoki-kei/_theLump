@@ -46,8 +46,8 @@ func set_color(c : Color) -> void:
 
 func update_direction():
 	var dir := velocity.normalized()
-	var cross := Vector3.LEFT.cross(dir).normalized()
-	var dot := Vector3.LEFT.dot(dir)
+	var cross := Vector3.FORWARD.cross(dir).normalized()
+	var dot := Vector3.FORWARD.dot(dir)
 
 	var sin_half = sqrt((1 - dot) / 2.0);
 	var cos_half = sqrt((1 + dot) / 2.0);

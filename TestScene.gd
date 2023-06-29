@@ -9,8 +9,10 @@ var bullet_res := preload("res://Bullet.tscn")
 
 func dummy_bullet_behavior(b : Bullet, delta : float):
 	if b.state.has("velocity"):
-		b.velocity = b.get_vector(b.state["velocity"] as Vector2)
-		b.update_direction()
+		var new_velocity := b.get_vector(b.state["velocity"] as Vector2)
+		if b.velocity != new_velocity:
+			b.velocity = new_velocity
+			b.update_direction()
 	#print(b.translation, " / ", b.velocity, " : ", b.surface)
 	pass
 
@@ -26,15 +28,16 @@ func _ready():
 
 	#$Bullet2.material = SpatialMaterial.new()
 	
-	for i in range(6):
+	for i in range(360):
 		var b := bullet_res.instance() as Bullet
 		b.initialize_bullet( \
 			Surface.SURF_XPLUS, \
 			Surface.to_vector(b.surface), \
 			Vector3.UP, \
 			funcref(self, "dummy_bullet_behavior"), \
-			{ "velocity" : Vector2(0, 1 / 254.0).rotated(i * 2 * PI / 6)} \
+			{ "velocity" : Vector2(0, 1 / 254.0).rotated(i * 2 * PI / 360)} \
 		)
+		b.color = Color.from_hsv(i / 360.0, 0.75, 1, 0.25)
 		b.add_to_group("bullets")
 		self.add_child(b)
 		pass

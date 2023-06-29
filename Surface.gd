@@ -65,9 +65,9 @@ static func from_vector(pos : Vector3) -> int:
 	if pos.x == 1.0: return SURF_XPLUS
 	if pos.y == 1.0: return SURF_YPLUS
 	if pos.z == 1.0: return SURF_ZPLUS
-	if pos.x == 1.0: return SURF_XMINUS
-	if pos.y == 1.0: return SURF_YMINUS
-	if pos.z == 1.0: return SURF_ZMINUS
+	if pos.x == -1.0: return SURF_XMINUS
+	if pos.y == -1.0: return SURF_YMINUS
+	if pos.z == -1.0: return SURF_ZMINUS
 	return SURF_NONE # TODO
 
 static func v2_to_v3(dir : Vector2) -> Vector3:

@@ -43,7 +43,13 @@ func move_object() -> int:
 	var finished := false
 
 	# 隣接面導出 -> 隣接面移動判定 -> 移動 を繰り返し実行するループ
-	while true:
+	while  destination.x < -1.0 \
+		or destination.x >  1.0 \
+		or destination.y < -1.0 \
+		or destination.y >  1.0 \
+		or destination.z < -1.0 \
+		or destination.z >  1.0 \
+	:
 		# 現在の面から、判定対象となる隣接面を列挙
 		var plane_list := Surface.get_neighbors(surface)
 		# 番兵としてSURF_NONEを追加

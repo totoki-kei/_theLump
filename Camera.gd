@@ -15,7 +15,7 @@ const SIDEVIEW_RATE = 0.875;
 var followee : GameObject
 var following : bool
 
-var mode : int = 1
+var mode : int = 0
 
 var current_pos : Vector3
 var current_up  : Vector3
