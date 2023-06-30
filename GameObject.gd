@@ -43,19 +43,23 @@ func move_object() -> int:
 	var finished := false
 
 	# 隣接面導出 -> 隣接面移動判定 -> 移動 を繰り返し実行するループ
-	while  destination.x < -1.0 \
-		or destination.x >  1.0 \
-		or destination.y < -1.0 \
-		or destination.y >  1.0 \
-		or destination.z < -1.0 \
-		or destination.z >  1.0 \
-	:
+	while true:
 		# 現在の面から、判定対象となる隣接面を列挙
-		var plane_list := Surface.get_neighbors(surface)
-		# 番兵としてSURF_NONEを追加
-		plane_list.append(Surface.SURF_NONE)
+		#var plane_list := Surface.get_neighbors(surface)
 		
-		for plane_surf in plane_list:
+		var surf_list = []
+		
+		if destination.x < -1.0: surf_list.append(Surface.SURF_XMINUS)
+		if destination.x >  1.0: surf_list.append(Surface.SURF_XPLUS)
+		if destination.y < -1.0: surf_list.append(Surface.SURF_YMINUS)
+		if destination.y >  1.0: surf_list.append(Surface.SURF_YPLUS)
+		if destination.z < -1.0: surf_list.append(Surface.SURF_ZMINUS)
+		if destination.z >  1.0: surf_list.append(Surface.SURF_ZPLUS)
+
+		# 番兵としてSURF_NONEを追加
+		surf_list.append(Surface.SURF_NONE)
+		
+		for plane_surf in surf_list:
 			assert (typeof(plane_surf) == TYPE_INT)
 			
 			# 平面がSURF_NONE(番兵)の場合、必要な面はすべて完了したことになる
@@ -70,6 +74,7 @@ func move_object() -> int:
 			
 			# p : Plane型
 			var p := Surface.to_plane(plane_surf)
+			assert(p)
 
 			# 移動ベクトルの始点がチェック対象平面上にあった場合、移動によって平面の上に飛び出す場合のみ処理を続行する
 			# それ以外(稜線上を移動、もしくは今所属している平面の上に戻る方向の移動の場合)は折り返し処理をしない
@@ -79,11 +84,17 @@ func move_object() -> int:
 
 			# Planeと移動経路ベクトルの衝突する場所を導出
 			var corride_at := p.intersects_segment(location, destination)
+
 			# 衝突しなかった場合は次の平面との判定へ
 			if corride_at == null : continue
 			# if corride_at == location : continue
 			if corride_at == destination : continue
 			
+			assert( -1.0 <= corride_at.x and corride_at.x <= 1.0 \
+				and -1.0 <= corride_at.y and corride_at.y <= 1.0 \
+				and -1.0 <= corride_at.z and corride_at.z <= 1.0 \
+			)
+
 			# 衝突地点からオーバーランしている部分のベクトル(Vector3)
 			var rest := destination - (corride_at as Vector3)
 			
@@ -121,6 +132,11 @@ func move_object() -> int:
 		# 完了していればそこで終了		
 		if finished : break
 		
+		assert( -1.0 <= location.x and location.x <= 1.0 \
+			and -1.0 <= location.y and location.y <= 1.0 \
+			and -1.0 <= location.z and location.z <= 1.0 \
+		)
+
 		pass # もう一度隣接面の導出から
 
 	
@@ -136,6 +152,11 @@ func move_object() -> int:
 
 	# 座標更新
 	self.translation = destination
+	
+	assert( -1.0 <= destination.x and destination.x <= 1.0 \
+		and -1.0 <= destination.y and destination.y <= 1.0 \
+		and -1.0 <= destination.z and destination.z <= 1.0 \
+	)
 	
 	return turn_count
 	

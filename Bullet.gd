@@ -8,17 +8,20 @@ class_name Bullet
 var material : Material setget set_material
 var color    : Color    setget set_color
 var state    : Dictionary = {}
-var behavior : FuncRef
+#var behavior : FuncRef
+var behavior : GDScriptFunctionState
 
-func initialize_bullet(surf : int, pos : Vector3, forward : Vector3, beh : FuncRef = null, initial_states : Dictionary = {}):
+var turn_count : int
+
+var velocity2d : Vector2
+
+func initialize_bullet(surf : int, pos : Vector3, forward : Vector3, beh : GDScriptFunctionState = null, initial_states : Dictionary = {}):
 	surface = surf
 	translation = pos
 	forward_dir = forward
 
 	behavior = beh
 	state = initial_states
-	if behavior and behavior.is_valid():
-		behavior.call_func(self, -1)
 	pass
 
 # Called when the node enters the scene tree for the first time.
@@ -59,11 +62,21 @@ func update_direction():
 	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta):
 	if behavior and behavior.is_valid():
-		behavior.call_func(self, delta)
+		var co_ret = behavior.resume(delta)
+		behavior = co_ret as GDScriptFunctionState
+		# コルーチンが return した場合はGDScriptFunctionState以外の型が返るためそこで終了となる
 	
-	move_object()
+	var new_velocity := get_vector(velocity2d)
+	if velocity != new_velocity:
+		velocity = new_velocity
+		update_direction()
+
+	turn_count += move_object()
 	pass
 
 
+func _on_Area_area_entered(area):
+	print("[Bullet] Collision: ", area)
+	pass # Replace with function body.

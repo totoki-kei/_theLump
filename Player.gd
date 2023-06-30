@@ -34,3 +34,8 @@ func _physics_process(delta):
 	move_object()
 	
 
+
+
+func _on_Area_area_entered(area):
+	print("[Player] Collision: ", area)
+	pass # Replace with function body.
