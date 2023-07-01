@@ -14,9 +14,6 @@ static func dummy_bullet_behavior(b : Bullet, vel : Vector2):
 		var _delta = yield()
 		if b.turn_count != last_turn_count:
 			last_turn_count = b.turn_count
-			b.velocity2d *= 3.0 / 2.0
-			if b.velocity2d.length() > 0.5:
-				b.velocity2d = b.velocity2d.normalized() * 0.5
 	pass
 
 # Called when the node enters the scene tree for the first time.
@@ -24,10 +21,10 @@ func _ready():
 	$Camera.set("followee", $Player)
 	$Camera.set("following", true)
 	
-	# ($Cube.inner_material as SpatialMaterial).albedo_color = Color.white
-	# ($Cube.middle_material as SpatialMaterial).albedo_color = Color.white
-	# ($Cube.outer_material as SpatialMaterial).albedo_color = Color.transparent
-	# ($Cube.surface_material as SpatialMaterial).albedo_color = Color.transparent
+	($Cube.inner_material as SpatialMaterial).albedo_color = Color.white
+	($Cube.middle_material as SpatialMaterial).albedo_color = Color.white
+	($Cube.outer_material as SpatialMaterial).albedo_color = Color.transparent
+	($Cube.surface_material as SpatialMaterial).albedo_color = Color.transparent
 
 	#$Bullet2.material = SpatialMaterial.new()
 	
@@ -42,7 +39,7 @@ func _process(delta):
 	if n > 1.0: n -= 1.0
 	#$Bullet2.color = Color(n, 1 - n, n)
 	if Input.is_action_just_pressed("ui_accept"):
-		shoot(6)
+		shoot(256)
 	pass
 
 func shoot(n : int) :
@@ -55,7 +52,7 @@ func shoot(n : int) :
 			dummy_bullet_behavior(b, Vector2(0, 1 / 254.0).rotated(i * 2 * PI / n)) as GDScriptFunctionState, \
 			{} \
 		)
-		b.color = Color.from_hsv(i / float(n), 0.75, 1, 0.25)
+		b.color = Color.from_hsv(i / float(n), 0.5, 1.0, 0.25)
 		b.add_to_group("bullets")
 		self.add_child(b)
 		pass

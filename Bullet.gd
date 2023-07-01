@@ -30,7 +30,7 @@ func _ready():
 
 func set_material(m : Material) -> void:
 	material = m
-	$BulletModel/obj1.mesh.surface_set_material(0, material)
+	$BulletModel/obj1.material_override = material 
 	var sm := material as SpatialMaterial
 	if sm:
 		color = sm.albedo_color 
@@ -40,7 +40,7 @@ func set_color(c : Color) -> void:
 	if material == null:
 		# モデルのobj1のマテリアルを独自のものに置き換える
 		material = $BulletModel/obj1.mesh.surface_get_material(0).duplicate()
-		$BulletModel/obj1.mesh.surface_set_material(0, material)
+		$BulletModel/obj1.material_override = material 
 		
 	var sm := material as SpatialMaterial
 	if sm:
