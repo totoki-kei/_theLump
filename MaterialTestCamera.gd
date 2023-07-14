@@ -1,4 +1,4 @@
-extends Camera
+extends Camera3D
 
 
 # Declare member variables here. Examples:
@@ -22,7 +22,7 @@ func _process(delta):
 	ry = clamp(ry, -PI / 2, PI / 2)
 	
 	#self.translation = Basis(Vector3(dy, dx, 0)).xform(self.translation)
-	self.translation = Vector3(0, 0, 3).rotated(Vector3.RIGHT, ry).rotated(Vector3.UP, rx)
+	self.position = Vector3(0, 0, 3).rotated(Vector3.RIGHT, ry).rotated(Vector3.UP, rx)
 	self.look_at(Vector3.ZERO, Vector3.UP)
 	
 	pass

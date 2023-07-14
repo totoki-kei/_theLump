@@ -28,8 +28,8 @@ static func to_minus(surf: int) -> int:
 
 static func get_random_point(surf : int) -> Vector3:
 	# 稜線に近すぎると問題が起きるため少し間隔を空ける
-	var a = rand_range(-0.95, 0.95)
-	var b = rand_range(-0.95, 0.95)
+	var a = randf_range(-0.95, 0.95)
+	var b = randf_range(-0.95, 0.95)
 
 	if surf == SURF_NONE:
 		surf = randi() % 6

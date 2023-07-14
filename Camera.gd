@@ -1,4 +1,4 @@
-extends Camera
+extends Camera3D
 
 
 # Declare member variables here. Examples:
@@ -10,13 +10,13 @@ const DELTA_RATE = 1.0 / 16.0;
 #const POS_MOVE_MAX_SPEED = 1.0 / 24.0;
 const POS_MOVE_MAX_SPEED = 1.0 / 32.0;
 const SIDEVIEW_SHIFT = 1.75;
-const SIDEVIEW_RATE = 0.875;
+const SIDEVIEW_RATE = 0.9;
 
 
 var followee : GameObject
 var following : bool
 
-var mode : int = 1
+var mode : int = 0
 
 var current_pos : Vector3
 var current_up  : Vector3
@@ -43,7 +43,7 @@ func _process(_delta):
 
 				var rate := 1.0
 
-				var followee_pos := followee.translation;
+				var followee_pos := followee.position;
 				
 				if Surface.to_plus(followee.surface) != Surface.SURF_XPLUS:
 					if followee_pos.x < -POS_MOVE_THRESHOLD:
@@ -82,7 +82,7 @@ func _process(_delta):
 				target_up = up
 			elif mode == 1:
 				var up := followee.forward_dir
-				var pos := 3 * followee.translation.normalized()
+				var pos := 3 * followee.position.normalized()
 
 				target_pos = pos
 				target_up = up
@@ -107,7 +107,7 @@ func _process(_delta):
 #		current_up  = current_up.move_toward(target_up, POS_MOVE_MAX_SPEED).normalized()
 		
 
-		self.translation = current_pos
+		self.position = current_pos
 		self.look_at(Vector3.ZERO, current_up)
 		pass
 

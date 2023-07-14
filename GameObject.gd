@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 class_name GameObject
 
 
@@ -32,9 +32,9 @@ func _ready():
 # 発生した折り返し回数を戻り値とする
 func move_object() -> int:
 	# 現在の位置
-	var location := self.translation
+	var location : Vector3 = self.position
 	# 目標到達地点(仮設定:折り返し処理で随時更新)
-	var destination := location + velocity
+	var destination : Vector3 = location + velocity
 
 	#var plane_surf = surface
 
@@ -62,7 +62,7 @@ func move_object() -> int:
 		if destination.z >  1.0:
 			surf_list.append(Surface.SURF_ZPLUS)
 
-		if surf_list.empty():
+		if surf_list.is_empty():
 			break
 
 		var has_collision : bool = false
@@ -70,11 +70,11 @@ func move_object() -> int:
 		var nearest_collision_point : Vector3
 		var nearest_collision_surface : int
 		for s in surf_list:
-			var p := Surface.to_plane(s)
-			var c := p.intersects_segment(location, destination)
+			var p : Plane = Surface.to_plane(s)
+			var c = p.intersects_segment(location, destination)
 			if c == null:
 				continue
-			var length_squared := (c - location).length_squared()
+			var length_squared : float = (c - location).length_squared()
 			if length_squared < nearest_length_squared:
 				has_collision = true
 				nearest_length_squared = length_squared
@@ -98,7 +98,7 @@ func move_object() -> int:
 
 			# オーバーラン部分のベクトルを稜線に従って折り曲げる
 			#rest = rest.rotated(rotation_axis, PI / 2)
-			rest = rotation_basis.xform(rest)
+			rest = rotation_basis * (rest)
 
 			# 折り曲げたベクトルで予想移動経路線分を更新
 			location = nearest_collision_point
@@ -106,7 +106,7 @@ func move_object() -> int:
 
 			# 面を移動したため、前方向ベクトルを更新する
 			#forward_dir = forward_dir.rotated(rotation_axis, PI / 2)
-			forward_dir = rotation_basis.xform(forward_dir)
+			forward_dir = rotation_basis * (forward_dir)
 
 			# 現在属している平面を更新
 			surface = nearest_collision_surface
@@ -136,7 +136,7 @@ func move_object() -> int:
 	
 
 	# 座標更新
-	self.translation = destination
+	self.position = destination
 	
 	assert( -1.0 <= destination.x and destination.x <= 1.0 \
 		and -1.0 <= destination.y and destination.y <= 1.0 \

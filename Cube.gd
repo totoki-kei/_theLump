@@ -1,15 +1,15 @@
-extends MeshInstance
+extends MeshInstance3D
 
 
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
 
-export var surface_material : Material
-export var outer_material : Material
-export var middle_material : Material
-export var inner_material : Material
-export var line_material : Material
+@export var surface_material : Material
+@export var outer_material : Material
+@export var middle_material : Material
+@export var inner_material : Material
+@export var line_material : Material
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,7 +23,7 @@ func _process(delta):
 
 func setup_mesh():
 	# インデックスは共通なので外で作成
-	var indices = PoolIntArray()
+	var indices = PackedInt32Array()
 	indices.append_array([1, 9, 0])
 	indices.append_array([5, 9, 1])
 	indices.append_array([4, 9, 5])
@@ -55,9 +55,9 @@ func setup_mesh():
 	indices.append_array([4, 13, 7])
 	
 	for size in [0.625, 0.75, 0.875, 1.0]:
-		var verts = PoolVector3Array()
-		var normals = PoolVector3Array()
-		var colors = PoolColorArray()
+		var verts = PackedVector3Array()
+		var normals = PackedVector3Array()
+		var colors = PackedColorArray()
 
 		# 0
 		verts.append(size * Vector3(-1, -1,  1))
@@ -129,7 +129,7 @@ func setup_mesh():
 		
 		if size == 1.0:
 			# ワイヤーフレーム部分の作成
-			var line_indices = PoolIntArray()
+			var line_indices = PackedInt32Array()
 			line_indices.append_array([0, 1, 1, 2, 2, 3, 3, 0])
 			line_indices.append_array([4, 5, 5, 6, 6, 7, 7, 4])
 			line_indices.append_array([0, 4, 1, 5, 2, 6, 3, 7])
@@ -152,4 +152,29 @@ func setup_mesh():
 	mesh.surface_set_material(2, outer_material)
 	mesh.surface_set_material(3, surface_material)
 	mesh.surface_set_material(4, line_material)
+
+
+var surface_color:
+	get:
+		return (surface_material as StandardMaterial3D).albedo_color
+	set(color):
+		(surface_material as StandardMaterial3D).albedo_color = color
+
+var outer_color:
+	get:
+		return (outer_material as StandardMaterial3D).albedo_color
+	set(color):
+		(outer_material as StandardMaterial3D).albedo_color = color
+
+var middle_color:
+	get:
+		return (middle_material as StandardMaterial3D).albedo_color
+	set(color):
+		(middle_material as StandardMaterial3D).albedo_color = color
+
+var inner_color:
+	get:
+		return (inner_material as StandardMaterial3D).albedo_color
+	set(color):
+		(inner_material as StandardMaterial3D).albedo_color = color
 
