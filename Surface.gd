@@ -26,10 +26,10 @@ static func to_plus(surf: int) -> int:
 static func to_minus(surf: int) -> int:
 	return surf | 0x01
 
-static func get_random_point(surf : int) -> Vector3:
+static func get_random_point(surf : int, margin : float = 0.95) -> Vector3:
 	# 稜線に近すぎると問題が起きるため少し間隔を空ける
-	var a = randf_range(-0.95, 0.95)
-	var b = randf_range(-0.95, 0.95)
+	var a = randf_range(-margin, margin)
+	var b = randf_range(-margin, margin)
 
 	if surf == SURF_NONE:
 		surf = randi() % 6
@@ -43,6 +43,17 @@ static func get_random_point(surf : int) -> Vector3:
 			return Vector3(a, b, 0) + to_normal(surf)
 		_:
 			return Vector3.ZERO
+
+static func get_triangle_fan(surf : int, n : float = 1.0) -> PackedVector3Array:
+	# 反時計回り
+	match surf:
+		SURF_XPLUS : return [ n * Vector3( 1,  0,  0), n * Vector3( 1,  1,  1), n * Vector3( 1,  1, -1), n * Vector3( 1, -1, -1), n * Vector3( 1, -1,  1), n * Vector3( 1,  1,  1) ]
+		SURF_YPLUS : return [ n * Vector3( 0,  1,  0), n * Vector3( 1,  1,  1), n * Vector3(-1,  1,  1), n * Vector3(-1,  1, -1), n * Vector3( 1,  1, -1), n * Vector3( 1,  1,  1) ]
+		SURF_ZPLUS : return [ n * Vector3( 0,  0,  1), n * Vector3( 1,  1,  1), n * Vector3( 1, -1,  1), n * Vector3(-1, -1,  1), n * Vector3(-1,  1,  1), n * Vector3( 1,  1,  1) ]
+		SURF_XMINUS: return [ n * Vector3(-1,  0,  0), n * Vector3(-1, -1, -1), n * Vector3(-1,  1, -1), n * Vector3(-1,  1,  1), n * Vector3(-1, -1,  1), n * Vector3(-1, -1, -1) ]
+		SURF_YMINUS: return [ n * Vector3( 0, -1,  0), n * Vector3(-1, -1, -1), n * Vector3(-1, -1,  1), n * Vector3( 1, -1,  1), n * Vector3( 1, -1, -1), n * Vector3(-1, -1, -1) ]
+		SURF_ZMINUS: return [ n * Vector3( 0,  0, -1), n * Vector3(-1, -1, -1), n * Vector3( 1, -1, -1), n * Vector3( 1,  1, -1), n * Vector3(-1,  1, -1), n * Vector3(-1, -1, -1) ]
+		_: return []
 
 
 static func to_plane(surf : int) -> Plane:

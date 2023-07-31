@@ -1,0 +1,47 @@
+[gd_scene load_steps=3 format=3 uid="uid://bnhtdj5lc4pu8"]
+
+[ext_resource type="Theme" uid="uid://ccxnw8uiob2ip" path="res://screen_menu_theme.tres" id="1_o0tl4"]
+[ext_resource type="Script" path="res://Menu/MainMenu.gd" id="2_5wm1d"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+focus_mode = 2
+theme = ExtResource("1_o0tl4")
+script = ExtResource("2_5wm1d")
+
+[node name="List" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 408.0
+offset_bottom = 244.0
+
+[node name="StartButton" type="Button" parent="List"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../QuitButton")
+focus_neighbor_bottom = NodePath("../LeaderboardButton")
+text = "GAME START"
+
+[node name="LeaderboardButton" type="Button" parent="List"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../StartButton")
+focus_neighbor_bottom = NodePath("../OptionsButton")
+text = "LEADERBOARD"
+
+[node name="OptionsButton" type="Button" parent="List"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../LeaderboardButton")
+focus_neighbor_bottom = NodePath("../QuitButton")
+text = "OPTIONS"
+
+[node name="QuitButton" type="Button" parent="List"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../OptionsButton")
+focus_neighbor_bottom = NodePath("../StartButton")
+text = "QUIT"
+
+[connection signal="pressed" from="List/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="List/LeaderboardButton" to="." method="_on_leaderboard_button_pressed"]
+[connection signal="pressed" from="List/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="List/QuitButton" to="." method="_on_quit_button_pressed"]

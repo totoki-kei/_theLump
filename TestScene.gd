@@ -5,7 +5,7 @@ extends Node3D
 # var a = 2
 # var b = "text"
 
-var bullet_res := preload("res://Bullet.tscn")
+var bullet_res := preload("res://GameObject/Bullets/Bullet.tscn")
 
 var default_material := load("res://Materials/bullet_default.material")
 var assult_material := load("res://Materials/bullet_assult.material")
@@ -19,10 +19,12 @@ func _ready():
 #	($Cube.middle_material as StandardMaterial3D).albedo_color = Color.WHITE
 #	($Cube.outer_material as StandardMaterial3D).albedo_color = Color.TRANSPARENT
 #	($Cube.surface_material as StandardMaterial3D).albedo_color = Color.TRANSPARENT
-
-	$Cube.inner_color = Color.WHITE
-	$Cube.middle_color = Color.WEB_GREEN
-	$Cube.outer_color = Color.PALE_VIOLET_RED
+	
+#	var cube = $Cube as Cube
+#	cube.inner_color = Color.TRANSPARENT
+#	cube.middle_color = Color.TRANSPARENT
+#	cube.outer_color = Color.TRANSPARENT
+#	cube.surface_color = Color.WHITE
 
 	#$Bullet2.material = SpatialMaterial.new()
 	
@@ -38,6 +40,8 @@ func _process(delta):
 	#$Bullet2.color = Color(n, 1 - n, n)
 	if Input.is_action_just_pressed("ui_accept"):
 		shoot(256)
+	if Input.is_action_just_pressed("ui_cancel"):
+		clear_bullets()
 	pass
 
 func shoot(n : int) :
@@ -57,3 +61,6 @@ func shoot(n : int) :
 		b.add_to_group("bullets")
 		self.add_child(b)
 		pass
+
+func clear_bullets():
+	get_tree().notify_group("bullets", Bullet.NOTIFICATION_VANISH)

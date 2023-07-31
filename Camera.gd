@@ -7,8 +7,8 @@ extends Camera3D
 
 const POS_MOVE_THRESHOLD = 0.5;
 const DELTA_RATE = 1.0 / 16.0;
-#const POS_MOVE_MAX_SPEED = 1.0 / 24.0;
-const POS_MOVE_MAX_SPEED = 1.0 / 32.0;
+const POS_MOVE_MAX_SPEED = 1.0 / 24.0;
+#const POS_MOVE_MAX_SPEED = 1.0 / 32.0;
 const SIDEVIEW_SHIFT = 1.75;
 const SIDEVIEW_RATE = 0.9;
 

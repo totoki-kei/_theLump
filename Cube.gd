@@ -1,5 +1,5 @@
 extends MeshInstance3D
-
+class_name Cube
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -14,7 +14,7 @@ extends MeshInstance3D
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$DebugCube.visible = false
-	setup_mesh()
+	setup_mesh2()
 	
 	pass
 
@@ -53,6 +53,9 @@ func setup_mesh():
 	indices.append_array([6, 13, 5])
 	indices.append_array([7, 13, 6])
 	indices.append_array([4, 13, 7])
+	
+	# 面が逆だった　ので反転
+	indices.reverse()
 	
 	for size in [0.625, 0.75, 0.875, 1.0]:
 		var verts = PackedVector3Array()
@@ -153,6 +156,62 @@ func setup_mesh():
 	mesh.surface_set_material(3, surface_material)
 	mesh.surface_set_material(4, line_material)
 
+func setup_mesh2():
+	var st := SurfaceTool.new()
+	
+	var colors = PackedColorArray([
+		Color(1.0, 1.0, 1.0, 0.125),
+		Color(1.0, 1.0, 1.0, 0.5),
+		Color(1.0, 1.0, 1.0, 0.5),
+		Color(1.0, 1.0, 1.0, 0.5),
+		Color(1.0, 1.0, 1.0, 0.5)
+	])
+
+	for size in [0.625, 0.75, 0.875, 1.0]:
+		st.begin(Mesh.PRIMITIVE_TRIANGLES)
+		st.set_normal(Surface.to_normal(Surface.SURF_XPLUS))
+		st.add_triangle_fan(Surface.get_triangle_fan(Surface.SURF_XPLUS, size), PackedVector2Array(), colors)
+		st.set_normal(Surface.to_normal(Surface.SURF_YPLUS))
+		st.add_triangle_fan(Surface.get_triangle_fan(Surface.SURF_YPLUS, size), PackedVector2Array(), colors)
+		st.set_normal(Surface.to_normal(Surface.SURF_ZPLUS))
+		st.add_triangle_fan(Surface.get_triangle_fan(Surface.SURF_ZPLUS, size), PackedVector2Array(), colors)
+		st.set_normal(Surface.to_normal(Surface.SURF_XMINUS))
+		st.add_triangle_fan(Surface.get_triangle_fan(Surface.SURF_XMINUS, size), PackedVector2Array(), colors)
+		st.set_normal(Surface.to_normal(Surface.SURF_YMINUS))
+		st.add_triangle_fan(Surface.get_triangle_fan(Surface.SURF_YMINUS, size), PackedVector2Array(), colors)
+		st.set_normal(Surface.to_normal(Surface.SURF_ZMINUS))
+		st.add_triangle_fan(Surface.get_triangle_fan(Surface.SURF_ZMINUS, size), PackedVector2Array(), colors)
+		st.commit(mesh)
+
+	# LineはArrayMeshの機能を使った方が作りやすい
+	var line_vertices := PackedVector3Array([
+		Vector3( 1,  1,  1), Vector3(-1,  1,  1), Vector3( 1, -1,  1), Vector3(-1, -1,  1),
+		Vector3( 1,  1, -1), Vector3(-1,  1, -1), Vector3( 1, -1, -1), Vector3(-1, -1, -1)
+	])
+	var line_indices := PackedInt32Array([
+		0b000, 0b001, 0b000, 0b010, 0b000, 0b100,
+		0b011, 0b010, 0b011, 0b001, 0b011, 0b111,
+		0b110, 0b111, 0b110, 0b100, 0b110, 0b010,
+		0b101, 0b100, 0b101, 0b111, 0b101, 0b001,
+
+		0b000, 0b011, 0b011, 0b101, 0b101, 0b110,
+		0b011, 0b110, 0b110, 0b000, 0b000, 0b101,
+		0b111, 0b100, 0b100, 0b001, 0b001, 0b010,
+		0b100, 0b010, 0b010, 0b111, 0b111, 0b001,
+	])
+	var lines_array = []
+	lines_array.resize(Mesh.ARRAY_MAX)
+	lines_array[Mesh.ARRAY_VERTEX] = line_vertices
+	lines_array[Mesh.ARRAY_INDEX] = line_indices
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINES, lines_array)
+	
+	
+	mesh.surface_set_material(0, inner_material)
+	mesh.surface_set_material(1, middle_material)
+	mesh.surface_set_material(2, outer_material)
+	mesh.surface_set_material(3, surface_material)
+	mesh.surface_set_material(4, line_material)
+	pass
 
 var surface_color:
 	get:
