@@ -6,6 +6,8 @@ extends Node3D
 # var b = "text"
 
 var bullet_res := preload("res://GameObject/Bullets/Bullet.tscn")
+var particle_res = preload("res://ExplosionParticle.tscn")
+
 
 var default_material := load("res://Materials/bullet_default.material")
 var assult_material := load("res://Materials/bullet_assult.material")
@@ -64,3 +66,12 @@ func shoot(n : int) :
 
 func clear_bullets():
 	get_tree().notify_group("bullets", Bullet.NOTIFICATION_VANISH)
+
+func _unhandled_input(event):
+	if event.is_action("game_ignite"):
+#		var particle := particle_res.instantiate() as Node3D
+#		particle.position = $Player.position
+#		add_child(particle)
+		var cam := $Camera3D as Camera3D
+		print_rich(cam.unproject_position($Player.position))
+	pass

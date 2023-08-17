@@ -2,18 +2,15 @@
 
 [ext_resource type="PackedScene" uid="uid://bdahy6jh7jm3i" path="res://Cube.tscn" id="1"]
 [ext_resource type="Script" path="res://Camera.gd" id="2"]
+[ext_resource type="Environment" uid="uid://bnev58n44pic3" path="res://game_scene_environment.tres" id="2_qxlrl"]
 [ext_resource type="PackedScene" uid="uid://bcxd2e677xc81" path="res://GameObject/Player.tscn" id="3"]
 [ext_resource type="Script" path="res://TestScene.gd" id="5"]
-
-[sub_resource type="Environment" id="1"]
-background_mode = 1
-glow_enabled = true
 
 [node name="TestScene" type="Node3D"]
 script = ExtResource("5")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("1")
+environment = ExtResource("2_qxlrl")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)

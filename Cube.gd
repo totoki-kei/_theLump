@@ -13,9 +13,9 @@ class_name Cube
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	$DebugCube.visible = false
-	setup_mesh2()
-	
+	if mesh.get_surface_count() == 0:
+		setup_mesh2()
+		ResourceSaver.save(mesh, "res://cube_mesh.tres", ResourceSaver.FLAG_COMPRESS)
 	pass
 
 func _process(delta):

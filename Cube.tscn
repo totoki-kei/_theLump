@@ -1,36 +1,18 @@
-[gd_scene load_steps=11 format=3 uid="uid://bdahy6jh7jm3i"]
+[gd_scene load_steps=8 format=3 uid="uid://bdahy6jh7jm3i"]
 
 [ext_resource type="Script" path="res://Cube.gd" id="1"]
+[ext_resource type="ArrayMesh" uid="uid://50p5675utupj" path="res://cube_mesh.tres" id="1_721py"]
 [ext_resource type="Material" uid="uid://8btfcpmrlgus" path="res://Materials/cube_line_material.tres" id="2"]
 [ext_resource type="Material" uid="uid://cj5kmyn4yowqy" path="res://Materials/cube_surface_material.tres" id="3"]
 [ext_resource type="Material" uid="uid://dvgnp8lupubit" path="res://Materials/cube_inner_material.tres" id="4"]
 [ext_resource type="Material" uid="uid://dm82w3r3oi67w" path="res://Materials/cube_outer_material.tres" id="5"]
 [ext_resource type="Material" uid="uid://dkhg53q2jrf3n" path="res://Materials/cube_middle_material.tres" id="6"]
 
-[sub_resource type="ArrayMesh" id="2"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wr6pb"]
-transparency = 1
-albedo_color = Color(1, 1, 1, 0.854902)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_np11e"]
-next_pass = SubResource("StandardMaterial3D_wr6pb")
-transparency = 1
-cull_mode = 1
-albedo_color = Color(1, 1, 1, 0.282353)
-
-[sub_resource type="BoxMesh" id="6"]
-material = SubResource("StandardMaterial3D_np11e")
-size = Vector3(2, 2, 2)
-
 [node name="Cube" type="MeshInstance3D"]
-mesh = SubResource("2")
+mesh = ExtResource("1_721py")
 script = ExtResource("1")
 surface_material = ExtResource("3")
 outer_material = ExtResource("5")
 middle_material = ExtResource("6")
 inner_material = ExtResource("4")
 line_material = ExtResource("2")
-
-[node name="DebugCube" type="MeshInstance3D" parent="."]
-mesh = SubResource("6")

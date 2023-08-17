@@ -9,14 +9,14 @@ const POS_MOVE_THRESHOLD = 0.5;
 const DELTA_RATE = 1.0 / 16.0;
 const POS_MOVE_MAX_SPEED = 1.0 / 24.0;
 #const POS_MOVE_MAX_SPEED = 1.0 / 32.0;
-const SIDEVIEW_SHIFT = 1.75;
-const SIDEVIEW_RATE = 0.9;
+const SIDEVIEW_SHIFT = 1.6;
+const SIDEVIEW_RATE = 0.8;
 
 
 var followee : GameObject
 var following : bool
 
-var mode : int = 0
+var mode : int = 1
 
 var current_pos : Vector3
 var current_up  : Vector3

@@ -1,7 +1,7 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://dm82w3r3oi67w"]
 
 [resource]
-render_priority = 3
+render_priority = -2
 transparency = 1
 vertex_color_use_as_albedo = true
 albedo_color = Color(0.235294, 0.67451, 0.254902, 0.501961)

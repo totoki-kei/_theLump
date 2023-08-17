@@ -6,9 +6,9 @@ extends GameObject
 # var b = "text"
 
 # 移動速度
-var SPEED = 1.0 / 48
-var SPEED_SLOWMO = 1.0 / 96
-var SPEED_TURBO = 3.0 / 64
+var SPEED = 1.0 / 96
+var SPEED_SLOWMO = 1.0 / 192
+#var SPEED_TURBO = 3.0 / 64
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,7 +23,8 @@ func _ready():
 #	pass
 
 func _process(delta):
-	var speed = SPEED_SLOWMO if Input.is_action_pressed("game_slowmo") else SPEED
+	var speed = SPEED_SLOWMO if Input.is_action_pressed("game_slowmo") \
+		   else SPEED
 	var dx = Input.get_axis("game_left", "game_right") * speed
 	var dy = Input.get_axis("game_down", "game_up") * speed
 
