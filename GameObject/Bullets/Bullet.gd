@@ -52,6 +52,7 @@ func set_color(c : Color) -> void:
 		sm.albedo_color = c
 	pass
 
+# 3Dモデルの回転Basisを更新する
 func update_direction():
 	var dir := velocity.normalized()
 	var cross := Vector3.FORWARD.cross(dir).normalized()

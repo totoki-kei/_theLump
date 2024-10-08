@@ -12,11 +12,13 @@ const POS_MOVE_MAX_SPEED = 1.0 / 24.0;
 const SIDEVIEW_SHIFT = 1.6;
 const SIDEVIEW_RATE = 0.8;
 
+const DEFAULT_POV = 60.0
+
 
 var followee : GameObject
 var following : bool
 
-var mode : int = 1
+var mode : int = 0
 
 var current_pos : Vector3
 var current_up  : Vector3
@@ -33,7 +35,7 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
+func _physics_process(_delta):
 
 	if following:
 		if followee != null:

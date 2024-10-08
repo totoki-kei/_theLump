@@ -21,5 +21,6 @@ func step(delta) -> State:
 
 func is_valid() -> bool:
 	match state:
-		State.INITIALIZED, State.RUNNING: return true
+		State.INITIALIZED: return true
+		State.RUNNING: return true
 		_ : return false

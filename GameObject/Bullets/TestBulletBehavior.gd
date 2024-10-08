@@ -7,10 +7,13 @@ func _init(b : Bullet, vel : Vector2):
 	super(b)
 	b.velocity2d = vel
 	last_turn_count = b.turn_count
+	# デモ用のためPause状態でも動く
+	b.process_mode = Node.PROCESS_MODE_ALWAYS
 
 
-func step(delta):
+func step(delta) -> State :
 	if bullet.turn_count != last_turn_count:
 		last_turn_count = bullet.turn_count
-	return State.RUNNING
+	state = State.RUNNING
+	return super(delta)
 	

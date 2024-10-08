@@ -49,6 +49,18 @@ func move_object() -> int:
 		
 		var surf_list = []
 		
+#		if destination.x < -1.0 && surface != Surface.SURF_XMINUS:
+#			surf_list.append(Surface.SURF_XMINUS)
+#		if destination.x >  1.0 && surface != Surface.SURF_XPLUS:
+#			surf_list.append(Surface.SURF_XPLUS)
+#		if destination.y < -1.0 && surface != Surface.SURF_YMINUS:
+#			surf_list.append(Surface.SURF_YMINUS)
+#		if destination.y >  1.0 && surface != Surface.SURF_YPLUS:
+#			surf_list.append(Surface.SURF_YPLUS)
+#		if destination.z < -1.0 && surface != Surface.SURF_ZMINUS:
+#			surf_list.append(Surface.SURF_ZMINUS)
+#		if destination.z >  1.0 && surface != Surface.SURF_ZPLUS:
+#			surf_list.append(Surface.SURF_ZPLUS)
 		if destination.x < -1.0:
 			surf_list.append(Surface.SURF_XMINUS)
 		if destination.x >  1.0:
@@ -82,31 +94,29 @@ func move_object() -> int:
 				nearest_collision_surface = s
 
 		if has_collision:
-			# ここにターン処理を追加
+			# ターン処理
+			
 			# 衝突地点からオーバーランしている部分のベクトル(Vector3)
 			var rest := destination - (nearest_collision_point as Vector3)
 			
 			# オーバーラン部分が完全にゼロベクトルである場合は
 			# 移動予測地点が判定対象の平面にちょうど乗る位置になっている
-			# その場合は、現在の平面と判定対称の平面の両方に属した稜線上にあるとみなし
+			# その場合は、現在の平面と判定対象の平面の両方に属した稜線上にあるとみなし
 			# この時点で判定を終わりにする
 			if rest == Vector3.ZERO:
 				break
 			
-			#var rotation_axis := Surface.to_normal(surface).cross(Surface.to_normal(plane_surf))
 			var rotation_basis := Surface.get_turn_basis(surface, nearest_collision_surface)
 
 			# オーバーラン部分のベクトルを稜線に従って折り曲げる
-			#rest = rest.rotated(rotation_axis, PI / 2)
 			rest = rotation_basis * (rest)
 
 			# 折り曲げたベクトルで予想移動経路線分を更新
 			location = nearest_collision_point
-			destination = nearest_collision_point + rest		
+			destination = nearest_collision_point + rest
 
 			# 面を移動したため、前方向ベクトルを更新する
-			#forward_dir = forward_dir.rotated(rotation_axis, PI / 2)
-			forward_dir = rotation_basis * (forward_dir)
+			forward_dir = rotation_basis * forward_dir
 
 			# 現在属している平面を更新
 			surface = nearest_collision_surface
@@ -150,4 +160,3 @@ func get_vector(v2d : Vector2) -> Vector3:
 	var ydir = forward_dir
 	var xdir = Surface.to_normal(surface).cross(forward_dir)
 	return xdir * v2d.x + ydir * v2d.y
-

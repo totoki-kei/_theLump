@@ -121,3 +121,20 @@ static func get_turn_basis(from : int, to : int) -> Basis:
 			pass
 	assert(false)
 	return Basis.IDENTITY
+
+static func get_vector_on_surface(surf : int, x : float, y : float) -> Vector3:
+	match surf:
+		SURF_XPLUS:
+			return Vector3(0, x, y)
+		SURF_YPLUS:
+			return Vector3(y ,0, x)
+		SURF_ZPLUS:
+			return Vector3(x, y, 0)
+		SURF_XMINUS:
+			return Vector3(0, -x, -y)
+		SURF_YMINUS:
+			return Vector3(-y ,0, -x)
+		SURF_ZMINUS:
+			return Vector3(-x, -y, 0)
+	assert(false)
+	return Vector3.ZERO

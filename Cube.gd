@@ -18,7 +18,7 @@ func _ready():
 		ResourceSaver.save(mesh, "res://cube_mesh.tres", ResourceSaver.FLAG_COMPRESS)
 	pass
 
-func _process(delta):
+func _physics_process(delta):
 	pass
 
 func setup_mesh():
@@ -236,4 +236,3 @@ var inner_color:
 		return (inner_material as StandardMaterial3D).albedo_color
 	set(color):
 		(inner_material as StandardMaterial3D).albedo_color = color
-

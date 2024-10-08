@@ -21,7 +21,6 @@ far = 100.0
 script = ExtResource("2")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Camera3D"]
-light_energy = 4.0
 
 [node name="Cube" parent="." instance=ExtResource("1")]
 sorting_offset = -10.0
@@ -30,4 +29,10 @@ sorting_use_aabb_center = false
 [node name="Player" parent="." instance=ExtResource("3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 
-[node name="GUILayer" type="CanvasLayer" parent="."]
+[node name="HUDLayer" type="CanvasLayer" parent="."]
+
+[node name="SpawnTimer" type="Timer" parent="."]
+process_callback = 0
+autostart = true
+
+[connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]

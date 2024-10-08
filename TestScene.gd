@@ -36,7 +36,7 @@ func _ready():
 var n = 0.0
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta):
 	n += delta;
 	if n > 1.0: n -= 1.0
 	#$Bullet2.color = Color(n, 1 - n, n)
@@ -67,6 +67,9 @@ func shoot(n : int) :
 func clear_bullets():
 	get_tree().notify_group("bullets", Bullet.NOTIFICATION_VANISH)
 
+
+var camera_tween : Tween;
+
 func _unhandled_input(event):
 	if event.is_action("game_ignite"):
 #		var particle := particle_res.instantiate() as Node3D
@@ -74,4 +77,59 @@ func _unhandled_input(event):
 #		add_child(particle)
 		var cam := $Camera3D as Camera3D
 		print_rich(cam.unproject_position($Player.position))
+	if event.is_action_pressed("game_slowmo"):
+		var cam := $Camera3D as Camera3D
+
+		if camera_tween:
+			camera_tween.kill()
+		var tw := self.create_tween()
+		tw.tween_property(cam, "fov", 30.0, 0.2)
+		tw.set_ease(tw.EASE_OUT)
+		tw.set_trans(tw.TRANS_QUAD)
+		tw.play()
+		camera_tween = tw;
+	elif event.is_action_released("game_slowmo"):
+		var cam := $Camera3D as Camera3D
+
+		if camera_tween:
+			camera_tween.kill()
+		var tw := self.create_tween()
+		tw.tween_property(cam, "fov", 60.0, 0.2)
+		tw.set_ease(tw.EASE_OUT)
+		tw.set_trans(tw.TRANS_QUAD)
+		tw.play()
+		camera_tween = tw;
+
+	var key_event := event as InputEventKey
+	if key_event && key_event.pressed && key_event.keycode == KEY_X:
+		var particle = particle_res.instantiate() as ExplosionParticle
+		particle.start($Player.position, Color.RED, assult_material, 16)
+		self.add_child(particle)
+		pass
 	pass
+
+
+func _on_spawn_timer_timeout():
+	var surf := Surface.invert(($Player as GameObject).surface)
+	assert(surf != Surface.SURF_NONE)
+	#var vel = Surface.get_vector_on_surface(surf, randf_range(-0.95, 0.95), randf_range(-0.95, 0.95))
+	var pos := Surface.get_random_point(surf);
+
+	var vel := Vector2.UP.rotated(randf_range(0, 360)) / 120.0;
+
+	var forward = Vector3.UP
+	if surf == Surface.SURF_YPLUS or surf == Surface.SURF_YMINUS:
+		forward = Vector3.LEFT
+
+	var b : Bullet = bullet_res.instantiate()
+	b.initialize_bullet( \
+		surf, \
+		pos, \
+		forward, \
+		TestBulletBehavior.new(b, vel), \
+		{} \
+	)
+	b.material = default_material
+	b.add_to_group("bullets")
+	self.add_child(b)
+	pass # Replace with function body.

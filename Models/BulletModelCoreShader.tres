@@ -1,0 +1,139 @@
+[gd_resource type="VisualShader" load_steps=12 format=3 uid="uid://bj37hvgniisvl"]
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_gy5wd"]
+expanded_output_ports = [0]
+parameter_name = "EmissionColor"
+default_value_enabled = true
+default_value = Color(1, 0, 1, 1)
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_ji7rd"]
+parameter_name = "AmbientColor"
+default_value_enabled = true
+default_value = Color(0, 0, 0, 1)
+
+[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_vhv7x"]
+output_port_for_preview = 0
+default_input_values = [0, 0.0, 1, 0.0, 2, 0.0, 3, 0.0]
+expanded_output_ports = [0]
+op_type = 2
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_cy154"]
+default_input_values = [0, 0.0, 1, 1.0]
+operator = 4
+
+[sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_bxcev"]
+default_input_values = [0, 2.5, 1, 3.0, 2, 0.5]
+
+[sub_resource type="VisualShaderNodeFloatFunc" id="VisualShaderNodeFloatFunc_4orx8"]
+function = 31
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_5va26"]
+parameter_name = "MinDistance"
+default_value_enabled = true
+default_value = 2.5
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_byg1i"]
+parameter_name = "MaxDistance"
+default_value_enabled = true
+default_value = 3.0
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_cxby1"]
+input_name = "camera_position_world"
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_gkasq"]
+input_name = "node_position_world"
+
+[sub_resource type="VisualShaderNodeVectorDistance" id="VisualShaderNodeVectorDistance_7vaii"]
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_add, depth_draw_never, cull_back, diffuse_lambert, specular_schlick_ggx, depth_test_disabled;
+
+uniform vec4 AmbientColor : source_color = vec4(0.000000, 0.000000, 0.000000, 1.000000);
+uniform vec4 EmissionColor : source_color = vec4(1.000000, 0.000000, 1.000000, 1.000000);
+uniform float MinDistance = 2.5;
+uniform float MaxDistance = 3;
+
+
+
+void fragment() {
+// ColorParameter:11
+	vec4 n_out11p0 = AmbientColor;
+
+
+// ColorParameter:10
+	vec4 n_out10p0 = EmissionColor;
+	float n_out10p1 = n_out10p0.r;
+	float n_out10p2 = n_out10p0.g;
+	float n_out10p3 = n_out10p0.b;
+
+
+// FloatParameter:16
+	float n_out16p0 = MinDistance;
+
+
+// FloatParameter:17
+	float n_out17p0 = MaxDistance;
+
+
+// Input:2
+	vec3 n_out2p0 = CAMERA_POSITION_WORLD;
+
+
+// Input:3
+	vec3 n_out3p0 = NODE_POSITION_WORLD;
+
+
+// Distance:4
+	float n_out4p0 = distance(n_out2p0, n_out3p0);
+
+
+// SmoothStep:14
+	float n_out14p0 = smoothstep(n_out16p0, n_out17p0, n_out4p0);
+
+
+// FloatFunc:15
+	float n_out15p0 = 1.0 - n_out14p0;
+
+
+// VectorCompose:12
+	vec4 n_out12p0 = vec4(n_out10p1, n_out10p2, n_out10p3, n_out15p0);
+	float n_out12p4 = n_out12p0.a;
+
+
+// Output:0
+	ALBEDO = vec3(n_out11p0.xyz);
+	ALPHA = n_out12p4;
+	EMISSION = vec3(n_out12p0.xyz);
+
+
+}
+"
+graph_offset = Vector2(-470.94, -452.18)
+modes/blend = 1
+modes/depth_draw = 2
+flags/depth_test_disabled = true
+nodes/fragment/0/position = Vector2(1940, -20)
+nodes/fragment/2/node = SubResource("VisualShaderNodeInput_cxby1")
+nodes/fragment/2/position = Vector2(20, 80)
+nodes/fragment/3/node = SubResource("VisualShaderNodeInput_gkasq")
+nodes/fragment/3/position = Vector2(20, 300)
+nodes/fragment/4/node = SubResource("VisualShaderNodeVectorDistance_7vaii")
+nodes/fragment/4/position = Vector2(540, 40)
+nodes/fragment/10/node = SubResource("VisualShaderNodeColorParameter_gy5wd")
+nodes/fragment/10/position = Vector2(60, -880)
+nodes/fragment/11/node = SubResource("VisualShaderNodeColorParameter_ji7rd")
+nodes/fragment/11/position = Vector2(20, 520)
+nodes/fragment/12/node = SubResource("VisualShaderNodeVectorCompose_vhv7x")
+nodes/fragment/12/position = Vector2(1580, -200)
+nodes/fragment/13/node = SubResource("VisualShaderNodeFloatOp_cy154")
+nodes/fragment/13/position = Vector2(880, 300)
+nodes/fragment/14/node = SubResource("VisualShaderNodeSmoothStep_bxcev")
+nodes/fragment/14/position = Vector2(880, -60)
+nodes/fragment/15/node = SubResource("VisualShaderNodeFloatFunc_4orx8")
+nodes/fragment/15/position = Vector2(1240, -20)
+nodes/fragment/16/node = SubResource("VisualShaderNodeFloatParameter_5va26")
+nodes/fragment/16/position = Vector2(60, -280)
+nodes/fragment/17/node = SubResource("VisualShaderNodeFloatParameter_byg1i")
+nodes/fragment/17/position = Vector2(-340, -280)
+nodes/fragment/connections = PackedInt32Array(2, 0, 4, 0, 3, 0, 4, 1, 11, 0, 0, 0, 10, 1, 12, 0, 10, 2, 12, 1, 10, 3, 12, 2, 12, 0, 0, 5, 4, 0, 13, 0, 12, 4, 0, 1, 4, 0, 14, 2, 14, 0, 15, 0, 15, 0, 12, 3, 16, 0, 14, 0, 17, 0, 14, 1)

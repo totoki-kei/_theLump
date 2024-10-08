@@ -14,7 +14,7 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta):
 	rx += delta * Input.get_axis("game_left", "game_right")
 	ry += delta * Input.get_axis("game_up", "game_down")
 	
