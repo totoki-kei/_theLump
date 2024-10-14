@@ -22,11 +22,11 @@ func _ready():
 #	($Cube.outer_material as StandardMaterial3D).albedo_color = Color.TRANSPARENT
 #	($Cube.surface_material as StandardMaterial3D).albedo_color = Color.TRANSPARENT
 	
-#	var cube = $Cube as Cube
-#	cube.inner_color = Color.TRANSPARENT
-#	cube.middle_color = Color.TRANSPARENT
-#	cube.outer_color = Color.TRANSPARENT
-#	cube.surface_color = Color.WHITE
+	var cube = $Cube as Cube
+	cube.inner_color = Color.TRANSPARENT
+	cube.middle_color = Color.TRANSPARENT
+	cube.outer_color = Color.WHITE
+	cube.surface_color = Color.TRANSPARENT
 
 	#$Bullet2.material = SpatialMaterial.new()
 	
