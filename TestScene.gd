@@ -71,7 +71,7 @@ func clear_bullets():
 var camera_tween : Tween;
 
 func _unhandled_input(event):
-	if event.is_action("game_ignite"):
+	if event.is_action(&"game_put"):
 #		var particle := particle_res.instantiate() as Node3D
 #		particle.position = $Player.position
 #		add_child(particle)

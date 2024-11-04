@@ -9,8 +9,8 @@ render_priority = 0
 shader = ExtResource("2_f5dpw")
 shader_parameter/AmbientColor = Color(0, 0, 0, 1)
 shader_parameter/EmissionColor = Color(1, 0, 1, 1)
-shader_parameter/MinDistance = 2.5
-shader_parameter/MaxDistance = 3.0
+shader_parameter/MinDistance = 2.0
+shader_parameter/MaxDistance = 5.0
 
 [sub_resource type="ArrayMesh" id="1"]
 resource_local_to_scene = true
