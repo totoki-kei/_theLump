@@ -27,6 +27,7 @@ sorting_offset = -10.0
 sorting_use_aabb_center = false
 
 [node name="Player" parent="." instance=ExtResource("3")]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 
 [node name="HUDLayer" type="CanvasLayer" parent="."]

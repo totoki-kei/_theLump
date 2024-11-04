@@ -109,7 +109,6 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(-470.94, -452.18)
 modes/blend = 1
 modes/depth_draw = 2
 flags/depth_test_disabled = true

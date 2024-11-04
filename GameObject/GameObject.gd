@@ -6,13 +6,13 @@ class_name GameObject
 # var a = 2
 # var b = "text"
 
-# 移動方向
+## 移動方向
 var velocity : Vector3
 
-# 入力における上方向 (正規化されたベクトル)
+## 入力における上方向 (正規化されたベクトル)
 var forward_dir : Vector3
 
-# 現在このオブジェクトが乗っている平面
+## 現在このオブジェクトが乗っている平面
 var surface : int
 
 
@@ -28,8 +28,8 @@ func _ready():
 
 
 
-# velocityに従ってオブジェクトを移動させる
-# 発生した折り返し回数を戻り値とする
+## velocityに従ってオブジェクトを移動させる
+## 発生した折り返し回数を戻り値とする
 func move_object() -> int:
 	# 現在の位置
 	var location : Vector3 = self.position
@@ -155,8 +155,28 @@ func move_object() -> int:
 	
 	return turn_count
 	
-
+## 2Dベクトルを 現在のsurfaceとforward_dirによって3Dベクトルに変換する
 func get_vector(v2d : Vector2) -> Vector3:
 	var ydir = forward_dir
 	var xdir = Surface.to_normal(surface).cross(forward_dir)
 	return xdir * v2d.x + ydir * v2d.y
+
+## 
+func get_vector_from_angle_length(angle : float, length : float) -> Vector3:
+	return forward_dir.rotated(Surface.to_normal(surface),angle) * length
+
+## 3Dベクトルからsurfaceとforward_dirを基準とした2Dベクトル成分を取得する
+func get_vector2d_from_3d(v3d : Vector3) -> Vector2:
+	var v2d = Surface.v3_to_v2(surface, v3d)
+
+	if v2d == Vector2.ZERO:
+		return Vector2.ZERO
+
+	var ydir = Surface.v3_to_v2(surface, forward_dir)
+	var xdir = Surface.v3_to_v2(surface, Surface.to_normal(surface).cross(forward_dir))
+
+	#var ret = Vector2(v2d.dot(xdir), v2d.dot(ydir))
+	var ret = Vector2(v2d.dot(ydir), v2d.dot(xdir))
+	#print("{%2.3f, %2.3f, %2.3f} => {%2.3f, %2.3f}" % [v3d.x, v3d.y, v3d.z, ret.x, ret.y])
+
+	return ret

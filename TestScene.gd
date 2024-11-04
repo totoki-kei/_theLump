@@ -112,7 +112,6 @@ func _unhandled_input(event):
 func _on_spawn_timer_timeout():
 	var surf := Surface.invert(($Player as GameObject).surface)
 	assert(surf != Surface.SURF_NONE)
-	#var vel = Surface.get_vector_on_surface(surf, randf_range(-0.95, 0.95), randf_range(-0.95, 0.95))
 	var pos := Surface.get_random_point(surf);
 
 	var vel := Vector2.UP.rotated(randf_range(0, 360)) / 120.0;
@@ -122,13 +121,8 @@ func _on_spawn_timer_timeout():
 		forward = Vector3.LEFT
 
 	var b : Bullet = bullet_res.instantiate()
-	b.initialize_bullet( \
-		surf, \
-		pos, \
-		forward, \
-		TestBulletBehavior.new(b, vel), \
-		{} \
-	)
+	#b.initialize_bullet(surf, pos, forward, TestBulletBehavior.new(b, vel), {})
+	b.initialize_bullet(surf, pos, forward, HomingBulletBehavior.new(b, vel), {})
 	b.material = default_material
 	b.add_to_group("bullets")
 	self.add_child(b)

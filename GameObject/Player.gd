@@ -1,5 +1,5 @@
 extends GameObject
-
+class_name Player
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -9,6 +9,18 @@ extends GameObject
 var SPEED = 1.0 / 64
 var SPEED_SLOWMO = SPEED / 2.0
 #var SPEED_TURBO = 3.0 / 64
+
+# 静的変数 現在のインスタンス
+static var current_instance : Player = null
+
+func _enter_tree() -> void:
+	if current_instance == null:
+		current_instance = self
+
+func _exit_tree() -> void:
+	if current_instance == self:
+		current_instance = null
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -40,3 +52,7 @@ func _physics_process(_delta):
 func _on_Area_area_entered(area):
 	print("[Player] Collision: ", area)
 	pass # Replace with function body.
+
+
+static func get_current_instance() -> Player:
+	return current_instance

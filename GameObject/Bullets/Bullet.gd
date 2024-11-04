@@ -13,7 +13,11 @@ var behavior : BulletBehavior
 
 var turn_count : int
 
+var angle_and_speed_mode : bool = false
+
 var velocity2d : Vector2
+var angle2d : float
+var speed2d : float
 
 const NOTIFICATION_VANISH = 0x1000_0001
 
@@ -52,6 +56,9 @@ func set_color(c : Color) -> void:
 		sm.albedo_color = c
 	pass
 
+func set_rotation_speed(multiplier : float):
+	$AnimationPlayer.speed_scale = multiplier
+
 # 3Dモデルの回転Basisを更新する
 func update_direction():
 	var dir := velocity.normalized()
@@ -72,7 +79,8 @@ func _physics_process(delta):
 	if behavior and behavior.is_valid():
 		var co_ret = behavior.step(delta)
 	
-	var new_velocity := get_vector(velocity2d)
+	var new_velocity := get_vector_from_angle_length(angle2d, speed2d) if angle_and_speed_mode \
+				   else get_vector(velocity2d)
 	if velocity != new_velocity:
 		velocity = new_velocity
 		update_direction()
