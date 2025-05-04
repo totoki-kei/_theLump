@@ -5,7 +5,7 @@ extends Node3D
 # var a = 2
 # var b = "text"
 
-var bullet_res := preload("res://GameObject/Bullets/Bullet.tscn")
+var bullet_res := preload("res://Bullets/Bullet.tscn")
 var particle_res = preload("res://ExplosionParticle.tscn")
 
 
@@ -33,19 +33,15 @@ func _ready():
 
 	pass # Replace with function body.
 
-var n = 0.0
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	n += delta;
-	if n > 1.0: n -= 1.0
-	#$Bullet2.color = Color(n, 1 - n, n)
 	if Input.is_action_just_pressed("ui_accept"):
 		shoot(256)
 	if Input.is_action_just_pressed("ui_cancel"):
 		clear_bullets()
 	pass
 
+# Bulletを円形に n 発発生させる
 func shoot(n : int) :
 	for i in range(n):
 		var b := bullet_res.instantiate() as Bullet
@@ -77,7 +73,7 @@ func _unhandled_input(event):
 #		add_child(particle)
 		var cam := $Camera3D as Camera3D
 		print_rich(cam.unproject_position($Player.position))
-	if event.is_action_pressed("game_slowmo"):
+	if event.is_action_pressed(&"game_slowmo"):
 		var cam := $Camera3D as Camera3D
 
 		if camera_tween:
@@ -88,7 +84,7 @@ func _unhandled_input(event):
 		tw.set_trans(tw.TRANS_QUAD)
 		tw.play()
 		camera_tween = tw;
-	elif event.is_action_released("game_slowmo"):
+	elif event.is_action_released(&"game_slowmo"):
 		var cam := $Camera3D as Camera3D
 
 		if camera_tween:
@@ -110,20 +106,30 @@ func _unhandled_input(event):
 
 
 func _on_spawn_timer_timeout():
+	# Playerの逆の面を取得
 	var surf := Surface.invert(($Player as GameObject).surface)
 	assert(surf != Surface.SURF_NONE)
+	
+	# Bulletの発生位置として、取得した面の上のランダムな位置を取得
 	var pos := Surface.get_random_point(surf);
 
+	# Bulletの初速を設定
 	var vel := Vector2.UP.rotated(randf_range(0, 360)) / 120.0;
 
+	# Bulletの正面方向を設定
+	# 値は何でもいいのだが、UPまたはLEFTを使用する
 	var forward = Vector3.UP
 	if surf == Surface.SURF_YPLUS or surf == Surface.SURF_YMINUS:
 		forward = Vector3.LEFT
 
+	# 新規Bulletインスタンスを作成
 	var b : Bullet = bullet_res.instantiate()
-	#b.initialize_bullet(surf, pos, forward, TestBulletBehavior.new(b, vel), {})
-	b.initialize_bullet(surf, pos, forward, HomingBulletBehavior.new(b, vel), {})
+
+	# 初期化(面、位置、正面方向、BulletBehaviorインスタンス、内部状態を設定)
+	b.initialize_bullet(surf, pos, forward, BasicBulletBehavior.new(b, vel), {})
+	# マテリアル(色)を設定
 	b.material = default_material
+
+	# グループに登録し、シーンに追加する
 	b.add_to_group("bullets")
 	self.add_child(b)
-	pass # Replace with function body.

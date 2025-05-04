@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://dkrayj4x6dv47"]
 
 [ext_resource type="PackedScene" uid="uid://bdahy6jh7jm3i" path="res://Cube.tscn" id="1"]
-[ext_resource type="Script" path="res://Camera.gd" id="2"]
+[ext_resource type="Script" uid="uid://bihlwdt6dw4qa" path="res://Camera.gd" id="2"]
 [ext_resource type="Environment" uid="uid://bnev58n44pic3" path="res://game_scene_environment.tres" id="2_qxlrl"]
 [ext_resource type="PackedScene" uid="uid://bcxd2e677xc81" path="res://GameObject/Player.tscn" id="3"]
-[ext_resource type="Script" path="res://TestScene.gd" id="5"]
+[ext_resource type="Script" uid="uid://dvhd1djjqomj4" path="res://TestScene.gd" id="5"]
 
 [node name="TestScene" type="Node3D"]
 script = ExtResource("5")

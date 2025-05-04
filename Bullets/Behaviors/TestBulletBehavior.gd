@@ -11,9 +11,7 @@ func _init(b : Bullet, vel : Vector2):
 	b.process_mode = Node.PROCESS_MODE_ALWAYS
 
 
-func step(delta) -> State :
+func step(delta) -> void :
 	if bullet.turn_count != last_turn_count:
 		last_turn_count = bullet.turn_count
-	state = State.RUNNING
-	return super(delta)
-	
+	super(delta)

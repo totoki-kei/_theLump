@@ -1,18 +1,15 @@
 extends GameObject
 class_name Bullet
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
 var material : Material: set = set_material
 var color    : Color: set = set_color
 var state    : Dictionary = {}
-#var behavior : FuncRef
 var behavior : BulletBehavior
 
 var turn_count : int
 
+## 移動ベクトルを angle2d と speed2d から生成する場合は true
+## 移動ベクトルとして velocity2d を直接使用する場合は false
 var angle_and_speed_mode : bool = false
 
 var velocity2d : Vector2
@@ -21,6 +18,14 @@ var speed2d : float
 
 const NOTIFICATION_VANISH = 0x1000_0001
 
+signal bullet_collide(bullet : Bullet, opposite : Area3D)
+
+## Bulletを初期化する
+## surf : 初期Surface
+## pos : 初期座標 必ずsurf上の点である必要がある
+## forward : 前方向を表すベクトル 必ずsurfと平行である必要がある
+## beh : (optional)ビヘイビア
+## initial_state : (optional)初期内部ステート
 func initialize_bullet(surf : int, pos : Vector3, forward : Vector3, beh : BulletBehavior = null, initial_states : Dictionary = {}):
 	surface = surf
 	position = pos
@@ -37,6 +42,7 @@ func _ready():
 	
 	pass # Replace with function body.
 
+## Bulletのマテリアルを設定
 func set_material(m : Material) -> void:
 	material = m
 	$BulletModel/obj1.material_override = material 
@@ -44,6 +50,7 @@ func set_material(m : Material) -> void:
 	if sm:
 		color = sm.albedo_color 
 
+## 色を指定してBulletのマテリアルを設定
 func set_color(c : Color) -> void:
 	color = c
 	if material == null:
@@ -56,6 +63,7 @@ func set_color(c : Color) -> void:
 		sm.albedo_color = c
 	pass
 
+## 回転アニメーションの速度を設定する
 func set_rotation_speed(multiplier : float):
 	$AnimationPlayer.speed_scale = multiplier
 
@@ -76,8 +84,9 @@ func update_direction():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
+	# ビヘイビアのステップ実行
 	if behavior and behavior.is_valid():
-		var co_ret = behavior.step(delta)
+		behavior.step(delta)
 	
 	var new_velocity := get_vector_from_angle_length(angle2d, speed2d) if angle_and_speed_mode \
 				   else get_vector(velocity2d)
@@ -89,8 +98,9 @@ func _physics_process(delta):
 	pass
 
 
-func _on_Area_area_entered(area):
+func _on_Area_area_entered(area: Area3D):
 	print("[Bullet] Collision: ", area)
+	emit_signal(&"bullet_collide", self, area)
 	pass # Replace with function body.
 
 func _notification(what):

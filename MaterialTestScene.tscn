@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://538t3smpyoa3"]
 
 [ext_resource type="Material" uid="uid://buuyyjw5wrefu" path="res://Materials/bullet_assult.material" id="1_o15dg"]
-[ext_resource type="Script" path="res://MaterialTestCamera.gd" id="5"]
+[ext_resource type="Script" uid="uid://baobmmr18em6q" path="res://MaterialTestCamera.gd" id="5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lgqd1"]
 

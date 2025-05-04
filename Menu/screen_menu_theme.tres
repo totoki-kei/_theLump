@@ -1,26 +1,35 @@
 [gd_resource type="Theme" load_steps=5 format=3 uid="uid://ccxnw8uiob2ip"]
 
-[ext_resource type="FontFile" uid="uid://bvdm5753do7kp" path="res://Assets/k8x12.ttf" id="1_5mnso"]
+[ext_resource type="FontFile" uid="uid://bsfhg0ygvuupp" path="res://Assets/x14y24pxHeadUpDaisy.ttf" id="1_wpv0v"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y7fj7"]
 bg_color = Color(0, 0, 0, 0)
 border_width_left = 1
-border_width_bottom = 2
+border_width_bottom = 8
 border_color = Color(0.8, 0.8, 0, 1)
 expand_margin_left = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pl3xq"]
 bg_color = Color(1, 1, 1, 0.0666667)
+border_width_left = 1
+border_width_bottom = 8
+expand_margin_left = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4x1yo"]
 bg_color = Color(1, 1, 1, 0.0666667)
+border_width_left = 1
+border_width_bottom = 8
+border_color = Color(0, 0, 0, 0)
+expand_margin_left = 4.0
 
 [resource]
-default_font = ExtResource("1_5mnso")
+default_font = ExtResource("1_wpv0v")
 default_font_size = 48
 Button/colors/font_focus_color = Color(0.94902, 0.94902, 0.545098, 1)
 Button/colors/font_outline_color = Color(0, 0, 0, 1)
-Button/constants/outline_size = 12
+Button/constants/outline_size = 24
+Button/font_sizes/font_size = 48
+Button/fonts/font = ExtResource("1_wpv0v")
 Button/styles/focus = SubResource("StyleBoxFlat_y7fj7")
 Button/styles/hover = SubResource("StyleBoxFlat_pl3xq")
 Button/styles/normal = SubResource("StyleBoxFlat_4x1yo")
