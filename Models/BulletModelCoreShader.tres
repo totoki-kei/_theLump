@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=12 format=3 uid="uid://bj37hvgniisvl"]
+[gd_resource type="VisualShader" format=3 uid="uid://bj37hvgniisvl"]
 
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_gy5wd"]
 expanded_output_ports = [0]
@@ -46,69 +46,6 @@ input_name = "node_position_world"
 [sub_resource type="VisualShaderNodeVectorDistance" id="VisualShaderNodeVectorDistance_7vaii"]
 
 [resource]
-code = "shader_type spatial;
-render_mode blend_add, depth_draw_never, cull_back, diffuse_lambert, specular_schlick_ggx, depth_test_disabled;
-
-uniform vec4 AmbientColor : source_color = vec4(0.000000, 0.000000, 0.000000, 1.000000);
-uniform vec4 EmissionColor : source_color = vec4(1.000000, 0.000000, 1.000000, 1.000000);
-uniform float MinDistance = 2.5;
-uniform float MaxDistance = 3.0;
-
-
-
-void fragment() {
-// ColorParameter:11
-	vec4 n_out11p0 = AmbientColor;
-
-
-// ColorParameter:10
-	vec4 n_out10p0 = EmissionColor;
-	float n_out10p1 = n_out10p0.r;
-	float n_out10p2 = n_out10p0.g;
-	float n_out10p3 = n_out10p0.b;
-
-
-// FloatParameter:16
-	float n_out16p0 = MinDistance;
-
-
-// FloatParameter:17
-	float n_out17p0 = MaxDistance;
-
-
-// Input:2
-	vec3 n_out2p0 = CAMERA_POSITION_WORLD;
-
-
-// Input:3
-	vec3 n_out3p0 = NODE_POSITION_WORLD;
-
-
-// Distance:4
-	float n_out4p0 = distance(n_out2p0, n_out3p0);
-
-
-// SmoothStep:14
-	float n_out14p0 = smoothstep(n_out16p0, n_out17p0, n_out4p0);
-
-
-// FloatFunc:15
-	float n_out15p0 = 1.0 - n_out14p0;
-
-
-// VectorCompose:12
-	vec4 n_out12p0 = vec4(n_out10p1, n_out10p2, n_out10p3, n_out15p0);
-	float n_out12p4 = n_out12p0.a;
-
-
-// Output:0
-	ALBEDO = vec3(n_out11p0.xyz);
-	ALPHA = n_out12p4;
-	EMISSION = vec3(n_out12p0.xyz);
-
-
-}
-"
 modes/blend = 1
 modes/depth_draw = 2
 flags/depth_test_disabled = true

@@ -6,9 +6,9 @@ class_name Player
 # var b = "text"
 
 # 移動速度
-var SPEED = 1.0 / 64
-var SPEED_SLOWMO = SPEED / 2.0
-#var SPEED_TURBO = 3.0 / 64
+var SPEED := 1.0 / 64
+var SPEED_SLOWMO := SPEED / 2.0
+#var SPEED_TURBO := 3.0 / 64
 
 # 静的変数 現在のインスタンス
 static var current_instance : Player = null
@@ -35,8 +35,8 @@ func _ready():
 #	pass
 
 func _physics_process(_delta):
-	var speed = SPEED_SLOWMO if Input.is_action_pressed("game_slowmo") \
-		   else SPEED
+	var speed := SPEED_SLOWMO if Input.is_action_pressed("game_slowmo") \
+			else SPEED
 	var dx = Input.get_axis("game_left", "game_right") * speed
 	var dy = Input.get_axis("game_down", "game_up") * speed
 

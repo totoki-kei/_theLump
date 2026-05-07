@@ -7,31 +7,29 @@
 
 [node name="GameScene" type="Node3D"]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldLayer" type="CanvasLayer" parent="."]
+process_mode = 1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="WorldLayer"]
 environment = ExtResource("2_owgw5")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+[node name="Camera3D" type="Camera3D" parent="WorldLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
 current = true
 fov = 60.0
 near = 0.25
 far = 100.0
 script = ExtResource("3_j1sth")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Camera3D"]
+[node name="OmniLight3D" type="OmniLight3D" parent="WorldLayer/Camera3D"]
 
-[node name="Cube" parent="." instance=ExtResource("4_j4ljv")]
+[node name="Cube" parent="WorldLayer" instance=ExtResource("4_j4ljv")]
 sorting_offset = -10.0
 sorting_use_aabb_center = false
+skeleton = NodePath("../..")
 
-[node name="Player" parent="." instance=ExtResource("5_f70f7")]
+[node name="Player" parent="WorldLayer" instance=ExtResource("5_f70f7")]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 
 [node name="HUDLayer" type="CanvasLayer" parent="."]
-
-[node name="SpawnTimer" type="Timer" parent="."]
-process_callback = 0
-autostart = true
-
-[connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]

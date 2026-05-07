@@ -1,6 +1,10 @@
 extends BulletBehavior
 class_name HomingBulletBehavior
 
+## ホーミング弾の動作を定義するクラス
+## 基本的な動作はBasicBulletBehaviorを継承する
+## プレイヤーが同一平面上にいる場合にホーミング動作を行う
+
 ## ホーミング中の速度倍率
 const HOMING_VELOCITY_MULTIPLIER := 0.8;
 ## ホーミング中の回頭速度(radian)

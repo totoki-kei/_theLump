@@ -8,9 +8,13 @@ extends Node3D
 var bullet_res := preload("res://Bullets/Bullet.tscn")
 var particle_res = preload("res://ExplosionParticle.tscn")
 
+var pause_menu_res = preload("res://Menu/PauseMenu.tscn")
+
 
 var default_material := load("res://Materials/bullet_default.material")
 var assult_material := load("res://Materials/bullet_assult.material")
+
+var current_menu : Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -34,11 +38,12 @@ func _ready():
 	pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta):
+func _physics_process(_delta):
 	if Input.is_action_just_pressed("ui_accept"):
 		shoot(256)
 	if Input.is_action_just_pressed("ui_cancel"):
-		clear_bullets()
+		#clear_bullets()
+		pause()
 	pass
 
 # Bulletを円形に n 発発生させる
@@ -62,6 +67,22 @@ func shoot(n : int) :
 
 func clear_bullets():
 	get_tree().notify_group("bullets", Bullet.NOTIFICATION_VANISH)
+
+func on_resume():
+	current_menu.queue_free()
+	get_tree().paused = false 
+	
+
+func pause() -> void:
+	# ポーズメニューのインスタンスを作成して表示
+	var pause_menu = pause_menu_res.instantiate();
+	pause_menu.connect("resume_selected", Callable(self, "on_resume") )
+	
+	self.current_menu = pause_menu
+	self.add_child(pause_menu)
+	
+	get_tree().paused = true # 一時停止 : メニュー内で解除する
+	pass
 
 
 var camera_tween : Tween;
@@ -128,7 +149,7 @@ func _on_spawn_timer_timeout():
 	# 初期化(面、位置、正面方向、BulletBehaviorインスタンス、内部状態を設定)
 	b.initialize_bullet(surf, pos, forward, BasicBulletBehavior.new(b, vel), {})
 	# マテリアル(色)を設定
-	b.material = default_material
+	b.material = assult_material
 
 	# グループに登録し、シーンに追加する
 	b.add_to_group("bullets")

@@ -1,6 +1,8 @@
 extends RefCounted
 class_name BulletBehavior
 
+## Bulletの動作を定義する基底クラス
+
 ## 状態
 enum State {
 	## 未定義
@@ -30,7 +32,8 @@ func _init(b : Bullet):
 	bullet = b
 	state = State.INITIALIZED
 
-## (要Override)１ステップ動作する
+## １ステップ動作する physics_processから呼び出される
+## 派生クラスでオーバーライドして動作を定義する
 func step(_delta) -> void:
 	pass
 

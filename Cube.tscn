@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bdahy6jh7jm3i"]
+[gd_scene format=3 uid="uid://bdahy6jh7jm3i"]
 
 [ext_resource type="Script" uid="uid://b6madxec34lgn" path="res://Cube.gd" id="1"]
 [ext_resource type="ArrayMesh" uid="uid://50p5675utupj" path="res://cube_mesh.tres" id="1_721py"]
@@ -8,7 +8,7 @@
 [ext_resource type="Material" uid="uid://dm82w3r3oi67w" path="res://Materials/cube_outer_material.tres" id="5"]
 [ext_resource type="Material" uid="uid://dkhg53q2jrf3n" path="res://Materials/cube_middle_material.tres" id="6"]
 
-[node name="Cube" type="MeshInstance3D"]
+[node name="Cube" type="MeshInstance3D" unique_id=410009449]
 mesh = ExtResource("1_721py")
 script = ExtResource("1")
 surface_material = ExtResource("3")

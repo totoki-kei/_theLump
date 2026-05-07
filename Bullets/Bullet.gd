@@ -1,6 +1,9 @@
 extends GameObject
 class_name Bullet
 
+## Bulletクラス
+## 実動作であるBulletBehaviorを設定することで動作する
+
 var material : Material: set = set_material
 var color    : Color: set = set_color
 var state    : Dictionary = {}
@@ -67,7 +70,7 @@ func set_color(c : Color) -> void:
 func set_rotation_speed(multiplier : float):
 	$AnimationPlayer.speed_scale = multiplier
 
-# 3Dモデルの回転Basisを更新する
+## 3Dモデルの回転Basisを更新する
 func update_direction():
 	var dir := velocity.normalized()
 	var cross := Vector3.FORWARD.cross(dir).normalized()

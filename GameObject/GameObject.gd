@@ -161,7 +161,7 @@ func get_vector(v2d : Vector2) -> Vector3:
 	var xdir = Surface.to_normal(surface).cross(forward_dir)
 	return xdir * v2d.x + ydir * v2d.y
 
-## 
+## 角度と長さから、現在のsurfaceとforward_dirによって3Dベクトルに変換する
 func get_vector_from_angle_length(angle : float, length : float) -> Vector3:
 	return forward_dir.rotated(Surface.to_normal(surface),angle) * length
 

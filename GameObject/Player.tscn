@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://bcxd2e677xc81"]
+[gd_scene format=3 uid="uid://bcxd2e677xc81"]
 
 [ext_resource type="PackedScene" uid="uid://4lcby1eff7f1" path="res://Models/player.glb" id="1"]
 [ext_resource type="Script" uid="uid://bhae3y17t3mt8" path="res://GameObject/Player.gd" id="2"]
@@ -7,13 +7,53 @@
 margin = 0.01
 radius = 0.03
 
-[node name="Player" instance=ExtResource("1")]
+[sub_resource type="Curve" id="Curve_4fn5a"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.3743463, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_xtxaw"]
+texture_mode = 1
+curve = SubResource("Curve_4fn5a")
+
+[sub_resource type="Curve" id="Curve_6wbdd"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.49737638), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_6iuh6"]
+curve = SubResource("Curve_6wbdd")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7tsdg"]
+particle_flag_rotate_y = true
+angle_min = -179.99998
+angle_max = 180.00002
+spread = 180.0
+initial_velocity_max = 0.099999994
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_6iuh6")
+alpha_curve = SubResource("CurveTexture_xtxaw")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tcgth"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+
+[sub_resource type="QuadMesh" id="QuadMesh_8trj2"]
+material = SubResource("StandardMaterial3D_tcgth")
+size = Vector2(0.075, 0.075)
+
+[node name="Player" unique_id=2000024570 instance=ExtResource("1")]
 script = ExtResource("2")
 
-[node name="Area3D" type="Area3D" parent="." index="2"]
+[node name="Area3D" type="Area3D" parent="." index="2" unique_id=1082293403]
 collision_mask = 10
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" index="0"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" index="0" unique_id=1630704059]
 shape = SubResource("1")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." index="3" unique_id=945604713]
+transform_align = 1
+process_material = SubResource("ParticleProcessMaterial_7tsdg")
+draw_pass_1 = SubResource("QuadMesh_8trj2")
 
 [connection signal="area_entered" from="Area3D" to="." method="_on_Area_area_entered"]
