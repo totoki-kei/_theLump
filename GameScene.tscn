@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://ddppruaf22awo"]
+
+[ext_resource type="Environment" uid="uid://bnev58n44pic3" path="res://game_scene_environment.tres" id="2_owgw5"]
+[ext_resource type="Script" uid="uid://bihlwdt6dw4qa" path="res://Camera.gd" id="3_j1sth"]
+[ext_resource type="PackedScene" uid="uid://bdahy6jh7jm3i" path="res://Cube.tscn" id="4_j4ljv"]
+[ext_resource type="PackedScene" uid="uid://bcxd2e677xc81" path="res://GameObject/Player.tscn" id="5_f70f7"]
+
+[node name="GameScene" type="Node3D"]
+
+[node name="WorldLayer" type="CanvasLayer" parent="."]
+process_mode = 1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="WorldLayer"]
+environment = ExtResource("2_owgw5")
+
+[node name="Camera3D" type="Camera3D" parent="WorldLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+current = true
+fov = 60.0
+near = 0.25
+far = 100.0
+script = ExtResource("3_j1sth")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="WorldLayer/Camera3D"]
+
+[node name="Cube" parent="WorldLayer" instance=ExtResource("4_j4ljv")]
+sorting_offset = -10.0
+sorting_use_aabb_center = false
+skeleton = NodePath("../..")
+
+[node name="Player" parent="WorldLayer" instance=ExtResource("5_f70f7")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="HUDLayer" type="CanvasLayer" parent="."]

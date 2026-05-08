@@ -1,58 +1,156 @@
-extends Spatial
+extends Node3D
 
 
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
 
-var bullet_res := preload("res://Bullet.tscn")
+var bullet_res := preload("res://Bullets/Bullet.tscn")
+var particle_res = preload("res://ExplosionParticle.tscn")
 
-static func dummy_bullet_behavior(b : Bullet, vel : Vector2):
-	b.velocity2d = vel
-	var last_turn_count = b.turn_count
-	while true:
-		var _delta = yield()
-		if b.turn_count != last_turn_count:
-			last_turn_count = b.turn_count
-	pass
+var pause_menu_res = preload("res://Menu/PauseMenu.tscn")
+
+
+var default_material := load("res://Materials/bullet_default.material")
+var assult_material := load("res://Materials/bullet_assult.material")
+
+var current_menu : Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	$Camera.set("followee", $Player)
-	$Camera.set("following", true)
+	$Camera3D.set("followee", $Player)
+	$Camera3D.set("following", true)
 	
-	($Cube.inner_material as SpatialMaterial).albedo_color = Color.white
-	($Cube.middle_material as SpatialMaterial).albedo_color = Color.white
-	($Cube.outer_material as SpatialMaterial).albedo_color = Color.transparent
-	($Cube.surface_material as SpatialMaterial).albedo_color = Color.transparent
+#	($Cube.inner_material as StandardMaterial3D).albedo_color = Color.WHITE
+#	($Cube.middle_material as StandardMaterial3D).albedo_color = Color.WHITE
+#	($Cube.outer_material as StandardMaterial3D).albedo_color = Color.TRANSPARENT
+#	($Cube.surface_material as StandardMaterial3D).albedo_color = Color.TRANSPARENT
+	
+	var cube = $Cube as Cube
+	cube.inner_color = Color.TRANSPARENT
+	cube.middle_color = Color.TRANSPARENT
+	cube.outer_color = Color.WHITE
+	cube.surface_color = Color.TRANSPARENT
 
 	#$Bullet2.material = SpatialMaterial.new()
 	
 
 	pass # Replace with function body.
 
-var n = 0.0
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	n += delta;
-	if n > 1.0: n -= 1.0
-	#$Bullet2.color = Color(n, 1 - n, n)
+func _physics_process(_delta):
 	if Input.is_action_just_pressed("ui_accept"):
 		shoot(256)
+	if Input.is_action_just_pressed("ui_cancel"):
+		#clear_bullets()
+		pause()
 	pass
 
+# Bulletを円形に n 発発生させる
 func shoot(n : int) :
 	for i in range(n):
-		var b := bullet_res.instance() as Bullet
+		var b := bullet_res.instantiate() as Bullet
 		b.initialize_bullet( \
 			Surface.SURF_XPLUS, \
 			Surface.to_vector(b.surface), \
 			Vector3.UP, \
-			dummy_bullet_behavior(b, Vector2(0, 1 / 254.0).rotated(i * 2 * PI / n)) as GDScriptFunctionState, \
+			TestBulletBehavior.new(b, Vector2(0, 1 / 254.0).rotated(i * 2 * PI / n)), \
 			{} \
 		)
-		b.color = Color.from_hsv(i / float(n), 0.5, 1.0, 0.25)
+#		b.color = Color.from_hsv(i / float(n), 1, 1.0, 0.25)
+#		b.color = Color.WHITE if i % 2 == 0 else Color.RED
+#		b.material = default_material
+		b.material = default_material if i % 2 == 0 else assult_material
 		b.add_to_group("bullets")
 		self.add_child(b)
 		pass
+
+func clear_bullets():
+	get_tree().notify_group("bullets", Bullet.NOTIFICATION_VANISH)
+
+func on_resume():
+	current_menu.queue_free()
+	get_tree().paused = false 
+	
+
+func pause() -> void:
+	# ポーズメニューのインスタンスを作成して表示
+	var pause_menu = pause_menu_res.instantiate();
+	pause_menu.connect("resume_selected", Callable(self, "on_resume") )
+	
+	self.current_menu = pause_menu
+	self.add_child(pause_menu)
+	
+	get_tree().paused = true # 一時停止 : メニュー内で解除する
+	pass
+
+
+var camera_tween : Tween;
+
+func _unhandled_input(event):
+	if event.is_action(&"game_put"):
+#		var particle := particle_res.instantiate() as Node3D
+#		particle.position = $Player.position
+#		add_child(particle)
+		var cam := $Camera3D as Camera3D
+		print_rich(cam.unproject_position($Player.position))
+	if event.is_action_pressed(&"game_slowmo"):
+		var cam := $Camera3D as Camera3D
+
+		if camera_tween:
+			camera_tween.kill()
+		var tw := self.create_tween()
+		tw.tween_property(cam, "fov", 30.0, 0.2)
+		tw.set_ease(tw.EASE_OUT)
+		tw.set_trans(tw.TRANS_QUAD)
+		tw.play()
+		camera_tween = tw;
+	elif event.is_action_released(&"game_slowmo"):
+		var cam := $Camera3D as Camera3D
+
+		if camera_tween:
+			camera_tween.kill()
+		var tw := self.create_tween()
+		tw.tween_property(cam, "fov", 60.0, 0.2)
+		tw.set_ease(tw.EASE_OUT)
+		tw.set_trans(tw.TRANS_QUAD)
+		tw.play()
+		camera_tween = tw;
+
+	var key_event := event as InputEventKey
+	if key_event && key_event.pressed && key_event.keycode == KEY_X:
+		var particle = particle_res.instantiate() as ExplosionParticle
+		particle.start($Player.position, Color.RED, assult_material, 16)
+		self.add_child(particle)
+		pass
+	pass
+
+
+func _on_spawn_timer_timeout():
+	# Playerの逆の面を取得
+	var surf := Surface.invert(($Player as GameObject).surface)
+	assert(surf != Surface.SURF_NONE)
+	
+	# Bulletの発生位置として、取得した面の上のランダムな位置を取得
+	var pos := Surface.get_random_point(surf);
+
+	# Bulletの初速を設定
+	var vel := Vector2.UP.rotated(randf_range(0, 360)) / 120.0;
+
+	# Bulletの正面方向を設定
+	# 値は何でもいいのだが、UPまたはLEFTを使用する
+	var forward = Vector3.UP
+	if surf == Surface.SURF_YPLUS or surf == Surface.SURF_YMINUS:
+		forward = Vector3.LEFT
+
+	# 新規Bulletインスタンスを作成
+	var b : Bullet = bullet_res.instantiate()
+
+	# 初期化(面、位置、正面方向、BulletBehaviorインスタンス、内部状態を設定)
+	b.initialize_bullet(surf, pos, forward, BasicBulletBehavior.new(b, vel), {})
+	# マテリアル(色)を設定
+	b.material = assult_material
+
+	# グループに登録し、シーンに追加する
+	b.add_to_group("bullets")
+	self.add_child(b)

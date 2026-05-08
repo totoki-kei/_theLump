@@ -1,24 +1,18 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene format=3 uid="uid://bdahy6jh7jm3i"]
 
-[ext_resource path="res://Cube.gd" type="Script" id=1]
-[ext_resource path="res://Materials/cube_line_material.tres" type="Material" id=2]
-[ext_resource path="res://Materials/cube_surface_material.tres" type="Material" id=3]
-[ext_resource path="res://Materials/cube_inner_material.tres" type="Material" id=4]
-[ext_resource path="res://Materials/cube_outer_material.tres" type="Material" id=5]
-[ext_resource path="res://Materials/cube_middle_material.tres" type="Material" id=6]
+[ext_resource type="Script" uid="uid://b6madxec34lgn" path="res://Cube.gd" id="1"]
+[ext_resource type="ArrayMesh" uid="uid://50p5675utupj" path="res://cube_mesh.tres" id="1_721py"]
+[ext_resource type="Material" uid="uid://8btfcpmrlgus" path="res://Materials/cube_line_material.tres" id="2"]
+[ext_resource type="Material" uid="uid://cj5kmyn4yowqy" path="res://Materials/cube_surface_material.tres" id="3"]
+[ext_resource type="Material" uid="uid://dvgnp8lupubit" path="res://Materials/cube_inner_material.tres" id="4"]
+[ext_resource type="Material" uid="uid://dm82w3r3oi67w" path="res://Materials/cube_outer_material.tres" id="5"]
+[ext_resource type="Material" uid="uid://dkhg53q2jrf3n" path="res://Materials/cube_middle_material.tres" id="6"]
 
-[sub_resource type="ArrayMesh" id=2]
-
-[sub_resource type="CubeMesh" id=6]
-
-[node name="Cube" type="MeshInstance"]
-mesh = SubResource( 2 )
-script = ExtResource( 1 )
-surface_material = ExtResource( 3 )
-outer_material = ExtResource( 5 )
-middle_material = ExtResource( 6 )
-inner_material = ExtResource( 4 )
-line_material = ExtResource( 2 )
-
-[node name="DebugCube" type="MeshInstance" parent="."]
-mesh = SubResource( 6 )
+[node name="Cube" type="MeshInstance3D" unique_id=410009449]
+mesh = ExtResource("1_721py")
+script = ExtResource("1")
+surface_material = ExtResource("3")
+outer_material = ExtResource("5")
+middle_material = ExtResource("6")
+inner_material = ExtResource("4")
+line_material = ExtResource("2")

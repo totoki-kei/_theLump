@@ -1,0 +1,59 @@
+[gd_scene load_steps=9 format=3 uid="uid://deurk20vv3qf5"]
+
+[ext_resource type="Script" uid="uid://b8klc2qdsb0vb" path="res://ExplosionParticle.gd" id="1_e2qaf"]
+
+[sub_resource type="Curve" id="Curve_tx3bh"]
+_data = [Vector2(0, 1), 0.0, 0.826038, 0, 0, Vector2(0.911058, 0.609428), -3.85185, -3.85185, 0, 0, Vector2(0.997596, 0), -6.46694, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_iupgj"]
+curve = SubResource("Curve_tx3bh")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_30ccs"]
+direction = Vector3(0, 0, 0)
+spread = 180.0
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
+gravity = Vector3(0, 0, 0)
+damping_min = 1.0
+damping_max = 1.0
+scale_curve = SubResource("CurveTexture_iupgj")
+
+[sub_resource type="Gradient" id="Gradient_nifb8"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_bkdf2"]
+gradient = SubResource("Gradient_nifb8")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jem6u"]
+transparency = 1
+blend_mode = 3
+depth_draw_mode = 1
+emission = Color(1, 0, 0, 1)
+emission_energy_multiplier = 2.0
+refraction_enabled = true
+refraction_scale = 1.0
+refraction_texture = SubResource("GradientTexture1D_bkdf2")
+refraction_texture_channel = 4
+
+[sub_resource type="SphereMesh" id="SphereMesh_8rb1e"]
+material = SubResource("StandardMaterial3D_jem6u")
+radius = 0.05
+height = 0.1
+radial_segments = 8
+rings = 4
+
+[node name="ExplosionParticle" type="GPUParticles3D"]
+emitting = false
+amount = 32
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+collision_base_size = 0.0
+visibility_aabb = AABB(-1, -1, -1, 2, 2, 2)
+draw_order = 1
+process_material = SubResource("ParticleProcessMaterial_30ccs")
+draw_pass_1 = SubResource("SphereMesh_8rb1e")
+script = ExtResource("1_e2qaf")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+omni_range = 1.0

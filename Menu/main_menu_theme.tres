@@ -1,0 +1,38 @@
+[gd_resource type="Theme" format=3 uid="uid://ccxnw8uiob2ip"]
+
+[ext_resource type="FontFile" uid="uid://bsfhg0ygvuupp" path="res://Assets/x14y24pxHeadUpDaisy.ttf" id="1_dlctt"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y7fj7"]
+content_margin_left = 2.0
+content_margin_right = 2.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 8
+border_width_bottom = 1
+border_color = Color(1.6, 1.6, 0, 1)
+expand_margin_left = 4.0
+expand_margin_right = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pl3xq"]
+bg_color = Color(1, 1, 1, 0.0666667)
+
+[sub_resource type="Gradient" id="Gradient_rgm6y"]
+offsets = PackedFloat32Array(0, 0.900901, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.0666667, 1, 1, 1, 0.2)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_i1vcn"]
+gradient = SubResource("Gradient_rgm6y")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_t0bju"]
+texture = SubResource("GradientTexture2D_i1vcn")
+
+[resource]
+default_font = ExtResource("1_dlctt")
+default_font_size = 48
+Button/colors/font_focus_color = Color(0.94902, 0.94902, 0.545098, 1)
+Button/colors/font_hover_color = Color(1, 1, 0.784314, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/constants/outline_size = 12
+Button/styles/focus = SubResource("StyleBoxFlat_y7fj7")
+Button/styles/hover = SubResource("StyleBoxFlat_pl3xq")
+Button/styles/normal = SubResource("StyleBoxTexture_t0bju")

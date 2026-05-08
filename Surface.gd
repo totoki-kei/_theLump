@@ -26,10 +26,13 @@ static func to_plus(surf: int) -> int:
 static func to_minus(surf: int) -> int:
 	return surf | 0x01
 
-static func get_random_point(surf : int) -> Vector3:
+static func get_sign(surf: int) -> int:
+	return -1 if (surf & 0x01) > 0 else 1
+
+static func get_random_point(surf : int, margin : float = 0.95) -> Vector3:
 	# 稜線に近すぎると問題が起きるため少し間隔を空ける
-	var a = rand_range(-0.95, 0.95)
-	var b = rand_range(-0.95, 0.95)
+	var a = randf_range(-margin, margin)
+	var b = randf_range(-margin, margin)
 
 	if surf == SURF_NONE:
 		surf = randi() % 6
@@ -43,6 +46,17 @@ static func get_random_point(surf : int) -> Vector3:
 			return Vector3(a, b, 0) + to_normal(surf)
 		_:
 			return Vector3.ZERO
+
+static func get_triangle_fan(surf : int, n : float = 1.0) -> PackedVector3Array:
+	# 反時計回り
+	match surf:
+		SURF_XPLUS : return [ n * Vector3( 1,  0,  0), n * Vector3( 1,  1,  1), n * Vector3( 1,  1, -1), n * Vector3( 1, -1, -1), n * Vector3( 1, -1,  1), n * Vector3( 1,  1,  1) ]
+		SURF_YPLUS : return [ n * Vector3( 0,  1,  0), n * Vector3( 1,  1,  1), n * Vector3(-1,  1,  1), n * Vector3(-1,  1, -1), n * Vector3( 1,  1, -1), n * Vector3( 1,  1,  1) ]
+		SURF_ZPLUS : return [ n * Vector3( 0,  0,  1), n * Vector3( 1,  1,  1), n * Vector3( 1, -1,  1), n * Vector3(-1, -1,  1), n * Vector3(-1,  1,  1), n * Vector3( 1,  1,  1) ]
+		SURF_XMINUS: return [ n * Vector3(-1,  0,  0), n * Vector3(-1, -1, -1), n * Vector3(-1,  1, -1), n * Vector3(-1,  1,  1), n * Vector3(-1, -1,  1), n * Vector3(-1, -1, -1) ]
+		SURF_YMINUS: return [ n * Vector3( 0, -1,  0), n * Vector3(-1, -1, -1), n * Vector3(-1, -1,  1), n * Vector3( 1, -1,  1), n * Vector3( 1, -1, -1), n * Vector3(-1, -1, -1) ]
+		SURF_ZMINUS: return [ n * Vector3( 0,  0, -1), n * Vector3(-1, -1, -1), n * Vector3( 1, -1, -1), n * Vector3( 1,  1, -1), n * Vector3(-1,  1, -1), n * Vector3(-1, -1, -1) ]
+		_: return []
 
 
 static func to_plane(surf : int) -> Plane:
@@ -110,3 +124,44 @@ static func get_turn_basis(from : int, to : int) -> Basis:
 			pass
 	assert(false)
 	return Basis.IDENTITY
+
+static func get_vector_on_surface(surf : int, x : float, y : float) -> Vector3:
+	match surf:
+		SURF_XPLUS:
+			return Vector3(0, x, y)
+		SURF_YPLUS:
+			return Vector3(y ,0, x)
+		SURF_ZPLUS:
+			return Vector3(x, y, 0)
+		SURF_XMINUS:
+			return Vector3(0, -x, -y)
+		SURF_YMINUS:
+			return Vector3(-y ,0, -x)
+		SURF_ZMINUS:
+			return Vector3(-x, -y, 0)
+	assert(false)
+	return Vector3.ZERO
+
+static func get_point_on_surface(surf : int, x : float, y : float) -> Vector3:
+	match surf:
+		SURF_XPLUS: return Vector3(1, x, y)
+		SURF_YPLUS: return Vector3(y, 1, x)
+		SURF_ZPLUS: return Vector3(x, y, 1)
+		SURF_XMINUS: return Vector3(-1, 0, 0)
+		SURF_YMINUS: return Vector3(0, -1, 0)
+		SURF_ZMINUS: return Vector3(0, 0, -1)
+		_: return Vector3.ZERO # TODO
+
+## Vector3をある面から見たときのVector2に投影する
+## get_vector_on_xxxx の逆演算
+static func v3_to_v2(surf : int, v3 : Vector3) -> Vector2 :
+	# return v3 * (Vector3(1, 1, 1) - to_vector(to_plus(surf)))
+	match surf:
+		SURF_XPLUS, SURF_XMINUS:
+			return get_sign(surf) * Vector2(v3.y, v3.z) # Vector3(0, x, y)
+		SURF_YPLUS, SURF_YMINUS:
+			return get_sign(surf) * Vector2(v3.z, v3.x) # Vector3(y ,0, x)
+		SURF_ZPLUS, SURF_ZMINUS:
+			return get_sign(surf) * Vector2(v3.x, v3.y) # Vector3(x, y, 0)
+	return Vector2.ZERO
+	
